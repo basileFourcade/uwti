@@ -1,3 +1,11 @@
+/*
+ * I DONT KNOW THE ORIGIN OF THIS SOURCE CODE FILE,
+ * THUS THE LICENSE AND AUTHOR ???
+ *
+ * Basile Fourcade: I've made some modifications in it.
+ *
+ * */
+
 #ifndef __BUTTON_H__
 #define __BUTTON_H__
 
