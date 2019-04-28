@@ -39,70 +39,71 @@ enum color_t
 	NB_OF_COLOR = 9
 };
 
-void colorToRGB(color_t color, uint8_t* red, uint8_t* green, uint8_t* blue, uint8_t intensity)
+void colorToRGB(color_t color, uint8_t* red, uint8_t* green, uint8_t* blue,
+		uint8_t intensity)
 {
-	if( (red == NULL) || (green == NULL) || (blue == NULL))
+	if ((red == NULL) || (green == NULL) || (blue == NULL))
 	{
 		return;
 	}
 
 	switch (color)
 	{
-		default:
-			//no break
-		case NO_COLOR:
-			*red = 0;
-			*green = 0;
-			*blue = 0;
-			break;
+	default:
+		//no break
+	case NO_COLOR:
+		*red = 0;
+		*green = 0;
+		*blue = 0;
+		break;
 
-		case COLOR_RED:
-			*red = intensity;
-			*green = 0;
-			*blue = 0;
-			break;
+	case COLOR_RED:
+		*red = intensity;
+		*green = 0;
+		*blue = 0;
+		break;
 
-		case COLOR_YELLOW:
-			*red = intensity;
-			*green = intensity;
-			*blue = 0;
-			break;
+	case COLOR_YELLOW:
+		*red = intensity;
+		*green = intensity;
+		*blue = 0;
+		break;
 
-		case COLOR_GREEN:
-			*red = 0;
-			*green = intensity;
-			*blue = 0;
-			break;
+	case COLOR_GREEN:
+		*red = 0;
+		*green = intensity;
+		*blue = 0;
+		break;
 
-		case COLOR_INDIGO:
-			*red = 0;
-			*green = intensity;
-			*blue = intensity;
-			break;
+	case COLOR_INDIGO:
+		*red = 0;
+		*green = intensity;
+		*blue = intensity;
+		break;
 
-		case COLOR_BLUE:
-			*red = 0;
-			*green = 0;
-			*blue = intensity;
-			break;
+	case COLOR_BLUE:
+		*red = 0;
+		*green = 0;
+		*blue = intensity;
+		break;
 
-		case COLOR_PURPLE:
-			*red = intensity;
-			*green = 0;
-			*blue = intensity;
-			break;
+	case COLOR_PURPLE:
+		*red = intensity;
+		*green = 0;
+		*blue = intensity;
+		break;
 
-		case COLOR_WHITE:
-			*red = intensity;
-			*green = intensity;
-			*blue = intensity;
-			break;
+	case COLOR_WHITE:
+		*red = intensity;
+		*green = intensity;
+		*blue = intensity;
+		break;
 
-		case COLOR_ORANGE:
-			*red = intensity;
-			*green = intensity/2;
-			*blue = 0;
-			break;
+	case COLOR_ORANGE:
+		*red = intensity;
+		*green = intensity / 2;
+		*blue = 0;
+		break;
 
 	}
 }

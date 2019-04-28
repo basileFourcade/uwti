@@ -24,7 +24,6 @@
 
 // Debugging Purpose
 //#define DEBUG_SERIAL
-
 #undef USE_SENSOR_LIGHT
 #undef GET_SENSOR_LIGHT_WHEN_BLINK
 
@@ -74,7 +73,6 @@ uint32_t previousMillisFade = 0;
 uint8_t brightness = 0;
 boolean fadeWayUp = true;
 uint8_t max_brightness = VALUE_COLOR_MEDIUM;
-
 
 // All mode definitions
 #include "Mode.h"
@@ -153,7 +151,8 @@ void setup()
 	/* Read NVM */
 	uint8_t unused_1;
 	uint8_t unused_2;
-	readNVMConfig((uint8_t *) &modeNVM, &game_forms_id, &unused_1, (uint8_t *) &unused_2);
+	readNVMConfig((uint8_t *) &modeNVM, &game_forms_id, &unused_1,
+			(uint8_t *) &unused_2);
 	readNVMCombinaisonCustomConfig();
 
 #ifdef DEBUG_SERIAL
@@ -211,7 +210,7 @@ void loop()
 
 #ifdef SLEEP_MODE
 	// Check if sleep is required
-	if(go_to_sleep(buttonEventTouchPanel))
+	if (go_to_sleep(buttonEventTouchPanel))
 	{
 		/* Just wake up, reset a few things */
 		reset_init();
@@ -516,39 +515,41 @@ void init_mode(uint8_t mode)
 	}
 }
 #elif defined(CONFIG_3_MODES)
-void process_mode_game(mode_t mode, button_event_t buttonEventTouchPanel, button_event_t buttonEventMode)
+void process_mode_game(mode_t mode, button_event_t buttonEventTouchPanel,
+		button_event_t buttonEventMode)
 {
 	(void) buttonEventMode;
 
 	switch (mode)
 	{
-		default:
-		case MODE_1_GAME:
-			game_forms_easy_with_idle_sleep(buttonEventTouchPanel);
-			break;
+	default:
+	case MODE_1_GAME:
+		game_forms_easy_with_idle_sleep(buttonEventTouchPanel);
+		break;
 
-		case MODE_2A_GAME:
-			game_forms_hard_with_idle_sleep(buttonEventTouchPanel);
-			break;
+	case MODE_2A_GAME:
+		game_forms_hard_with_idle_sleep(buttonEventTouchPanel);
+		break;
 
-		case MODE_2B_GAME:
-			game_forms_easy_forced_sequence_with_idle_sleep(buttonEventTouchPanel);
-			break;
+	case MODE_2B_GAME:
+		game_forms_easy_forced_sequence_with_idle_sleep(buttonEventTouchPanel);
+		break;
 	}
 }
 
-void process_mode_config(mode_t mode, button_event_t buttonEventTouchPanel, button_event_t buttonEventMode)
+void process_mode_config(mode_t mode, button_event_t buttonEventTouchPanel,
+		button_event_t buttonEventMode)
 {
 	(void) buttonEventMode;
 
 	switch (mode)
 	{
-		default:
-		case MODE_1_GAME:
-		case MODE_2A_GAME:
-		case MODE_2B_GAME:
-			mode_config(buttonEventTouchPanel);
-			break;
+	default:
+	case MODE_1_GAME:
+	case MODE_2A_GAME:
+	case MODE_2B_GAME:
+		mode_config(buttonEventTouchPanel);
+		break;
 	}
 }
 
@@ -557,18 +558,21 @@ void blink_when_switch_mode(uint8_t mode)
 	// Specific blink
 	switch ((mode_t) mode)
 	{
-		default:
-		case MODE_1_GAME:
-			doLedRingFourPixelsBlink(MODE_ID_COLOR, NO_COLOR, NO_COLOR, NO_COLOR, 200, 3);
-			break;
+	default:
+	case MODE_1_GAME:
+		doLedRingFourPixelsBlink(MODE_ID_COLOR, NO_COLOR, NO_COLOR, NO_COLOR,
+				200, 3);
+		break;
 
-		case MODE_2A_GAME:
-			doLedRingFourPixelsBlink(MODE_ID_COLOR, MODE_ID_COLOR, NO_COLOR, NO_COLOR, 200, 3);
-			break;
+	case MODE_2A_GAME:
+		doLedRingFourPixelsBlink(MODE_ID_COLOR, MODE_ID_COLOR, NO_COLOR,
+				NO_COLOR, 200, 3);
+		break;
 
-		case MODE_2B_GAME:
-			doLedRingFourPixelsBlink(MODE_ID_COLOR, NO_COLOR, MODE_ID_COLOR, NO_COLOR, 200, 3);
-			break;
+	case MODE_2B_GAME:
+		doLedRingFourPixelsBlink(MODE_ID_COLOR, NO_COLOR, MODE_ID_COLOR,
+				NO_COLOR, 200, 3);
+		break;
 	}
 }
 
@@ -583,13 +587,13 @@ void switch_mode(button_event_t bTouchPanel, button_event_t bMode)
 		{
 			switch (mode)
 			{
-				default:
-				case MODE_1_GAME:
-				case MODE_2A_GAME:
-				case MODE_2B_GAME:
-					/* Exit config, Save game_forms_id */
-					writeNVMConfig(NVM_GAME_FORMS_ID_OFF, game_forms_id);
-					break;
+			default:
+			case MODE_1_GAME:
+			case MODE_2A_GAME:
+			case MODE_2B_GAME:
+				/* Exit config, Save game_forms_id */
+				writeNVMConfig(NVM_GAME_FORMS_ID_OFF, game_forms_id);
+				break;
 			}
 
 			modeConfig = false;
@@ -641,13 +645,13 @@ void switch_mode(button_event_t bTouchPanel, button_event_t bMode)
 	{
 		switch (mode)
 		{
-			default:
-			case MODE_1_GAME:
-			case MODE_2A_GAME:
-			case MODE_2B_GAME:
-				/* Going into modeConfig for all games */
-				showGameFormsId(game_forms_id, 200, 3, modeConfig);
-				break;
+		default:
+		case MODE_1_GAME:
+		case MODE_2A_GAME:
+		case MODE_2B_GAME:
+			/* Going into modeConfig for all games */
+			showGameFormsId(game_forms_id, 200, 3, modeConfig);
+			break;
 		}
 
 		/* Notify change */
@@ -659,19 +663,19 @@ void init_mode(uint8_t mode)
 {
 	switch ((mode_t) mode)
 	{
-		case MODE_1_GAME:
-		case MODE_2A_GAME:
-			colorId = NO_COLOR;
-			break;
+	case MODE_1_GAME:
+	case MODE_2A_GAME:
+		colorId = NO_COLOR;
+		break;
 
-		case MODE_2B_GAME:
-			colorId = NO_COLOR;
-			initAllowedCombinaison();
-			break;
+	case MODE_2B_GAME:
+		colorId = NO_COLOR;
+		initAllowedCombinaison();
+		break;
 
-		default:
-			colorId = NO_COLOR;
-			break;
+	default:
+		colorId = NO_COLOR;
+		break;
 	}
 }
 #endif
@@ -680,7 +684,8 @@ void init_mode(uint8_t mode)
  */
 
 // MODE SLEEP
-void idle_sleep(button_event_t bTouchPanel, button_event_t bMode, color_t color_idle)
+void idle_sleep(button_event_t bTouchPanel, button_event_t bMode,
+		color_t color_idle)
 {
 	(void) bTouchPanel;
 	(void) bMode;
@@ -739,7 +744,8 @@ void idle_sleep(button_event_t bTouchPanel, button_event_t bMode, color_t color_
 
 // MODE SLEEP BLINK
 #define ILDE_SLEEP_BLINK_MS		5000
-void idle_sleep_blink(button_event_t bTouchPanel, button_event_t bMode, color_t color_idle)
+void idle_sleep_blink(button_event_t bTouchPanel, button_event_t bMode,
+		color_t color_idle)
 {
 	(void) bTouchPanel;
 	(void) bMode;
@@ -793,7 +799,8 @@ void game_forms_easy_fade(button_event_t bTouchPanel, button_event_t bMode)
 	detectNeighbors(&isChangeDetected);
 
 	/* Warning: faces[i][HERE] must be 1 or 0 */
-	combinaison = 0x0F & ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
+	combinaison = 0x0F
+			& ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
 
 	if (bTouchPanel == CLICK || fakeClick == true)
 	{
@@ -801,12 +808,15 @@ void game_forms_easy_fade(button_event_t bTouchPanel, button_event_t bMode)
 
 		/* Restart */
 		rgb_idx = 0;
-		colorId = getColorSequenceFromCombinaison(combinaison, game_forms_id, rgb_idx, &game_fade_speed);
-		colorToRGB(colorId, &rgb[0], &rgb[1], &rgb[2], INTENSITY_MEDIUM_DEFAULT);
+		colorId = getColorSequenceFromCombinaison(combinaison, game_forms_id,
+				rgb_idx, &game_fade_speed);
+		colorToRGB(colorId, &rgb[0], &rgb[1], &rgb[2],
+		INTENSITY_MEDIUM_DEFAULT);
 		setLedringRGB(rgb[0], rgb[1], rgb[2]);
 
 		rgb_idx++;
-		colorToRGB(colorId, &rgb_next[0], &rgb_next[1], &rgb_next[2], INTENSITY_MEDIUM_DEFAULT);
+		colorToRGB(colorId, &rgb_next[0], &rgb_next[1], &rgb_next[2],
+		INTENSITY_MEDIUM_DEFAULT);
 	}
 
 	if ((millis() - previousMillisFade >= game_fade_speed) || isChangeDetected)
@@ -831,13 +841,15 @@ void game_forms_easy_fade(button_event_t bTouchPanel, button_event_t bMode)
 		if (finished || isChangeDetected)
 		{
 			/* Select next color */
-			colorId = getColorSequenceFromCombinaison(combinaison, game_forms_id, rgb_idx, &game_fade_speed);
+			colorId = getColorSequenceFromCombinaison(combinaison,
+					game_forms_id, rgb_idx, &game_fade_speed);
 			rgb_idx++;
 			if (rgb_idx > MAX_COLOR_SQ_NB - 1)
 			{
 				rgb_idx = 0;
 			}
-			colorToRGB(colorId, &rgb_next[0], &rgb_next[1], &rgb_next[2], INTENSITY_MEDIUM_DEFAULT);
+			colorToRGB(colorId, &rgb_next[0], &rgb_next[1], &rgb_next[2],
+			INTENSITY_MEDIUM_DEFAULT);
 		}
 
 		setLedringRGB(rgb[0], rgb[1], rgb[2]);
@@ -920,7 +932,8 @@ void game_forms_easy(button_event_t bTouchPanel)
 	detectNeighbors(&isChangeDetected);
 
 	/* Warning: faces[i][HERE] must be 1 or 0 */
-	combinaison = 0x0F & ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
+	combinaison = 0x0F
+			& ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
 
 	/* Now we can play */
 	colorId = getColorFromCombinaisonEasy(combinaison, game_forms_id);
@@ -944,7 +957,8 @@ void game_forms_easy_with_idle_sleep(button_event_t bTouchPanel)
 	nb_of_neighbors = detectNeighbors(&isChangeDetected);
 
 	/* Check if idle is required */
-	goIdle = games_forms_idle_check(nb_of_neighbors, isChangeDetected, &longIdle);
+	goIdle = games_forms_idle_check(nb_of_neighbors, isChangeDetected,
+			&longIdle);
 	/* Extra check for mode_idle_blink */
 	idle_sleep_switch_mode(nb_of_neighbors, longIdle, &mode_idle_blink);
 
@@ -955,7 +969,9 @@ void game_forms_easy_with_idle_sleep(button_event_t bTouchPanel)
 	else
 	{
 		/* Warning: faces[i][HERE] must be 1 or 0 */
-		combinaison = 0x0F & ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
+		combinaison = 0x0F
+				& ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1)
+						+ faces[3]);
 
 		/* Now we can play */
 		colorId = getColorFromCombinaisonEasy(combinaison, game_forms_id);
@@ -980,7 +996,8 @@ void game_forms_hard_with_idle_sleep(button_event_t bTouchPanel)
 	nb_of_neighbors = detectNeighbors(&isChangeDetected);
 
 	/* Check if idle is required */
-	goIdle = games_forms_idle_check(nb_of_neighbors, isChangeDetected, &longIdle);
+	goIdle = games_forms_idle_check(nb_of_neighbors, isChangeDetected,
+			&longIdle);
 	/* Extra check for mode_idle_blink */
 	idle_sleep_switch_mode(nb_of_neighbors, longIdle, &mode_idle_blink);
 
@@ -991,7 +1008,9 @@ void game_forms_hard_with_idle_sleep(button_event_t bTouchPanel)
 	else
 	{
 		/* Warning: faces[i][HERE] must be 1 or 0 */
-		combinaison = 0x0F & ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
+		combinaison = 0x0F
+				& ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1)
+						+ faces[3]);
 
 		/* Now we can play */
 		colorId = getColorFromCombinaisonHard(combinaison, game_forms_id);
@@ -1016,7 +1035,8 @@ void game_forms_easy_forced_sequence_with_idle_sleep(button_event_t bTouchPanel)
 	nb_of_neighbors = detectNeighbors(&isChangeDetected);
 
 	/* Check if idle is required */
-	goIdle = games_forms_idle_check(nb_of_neighbors, isChangeDetected, &longIdle);
+	goIdle = games_forms_idle_check(nb_of_neighbors, isChangeDetected,
+			&longIdle);
 	/* Extra check for mode_idle_blink */
 	idle_sleep_switch_mode(nb_of_neighbors, longIdle, &mode_idle_blink);
 
@@ -1027,7 +1047,9 @@ void game_forms_easy_forced_sequence_with_idle_sleep(button_event_t bTouchPanel)
 	else
 	{
 		/* Warning: faces[i][HERE] must be 1 or 0 */
-		combinaison = 0x0F & ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
+		combinaison = 0x0F
+				& ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1)
+						+ faces[3]);
 
 		/* Now we can play */
 		colorId = getColorFromCombinaisonEasy(combinaison, game_forms_id);
@@ -1052,7 +1074,8 @@ void game_forms_easy_forced_sequence(button_event_t bTouchPanel)
 	detectNeighbors(&isChangeDetected);
 
 	/* Warning: faces[i][HERE] must be 1 or 0 */
-	combinaison = 0x0F & ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
+	combinaison = 0x0F
+			& ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
 
 	/* Now we can play */
 	colorId = getColorFromCombinaisonEasy(combinaison, game_forms_id);
@@ -1075,7 +1098,8 @@ void game_forms_easy_all_rules(button_event_t bTouchPanel)
 	detectNeighbors(&isChangeDetected);
 
 	/* Warning: faces[i][HERE] must be 1 or 0 */
-	combinaison = 0x0F & ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
+	combinaison = 0x0F
+			& ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
 
 	/* Click and alone */
 	if ((bTouchPanel == CLICK) && combinaison == 0x00)
@@ -1124,7 +1148,8 @@ void game_forms_easy_combi_only(button_event_t bTouchPanel)
 	detectNeighbors(&isChangeDetected);
 
 	/* Warning: faces[i][HERE] must be 1 or 0 */
-	combinaison = 0x0F & ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
+	combinaison = 0x0F
+			& ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
 
 	/* Now we can play */
 	colorId = getColorFromCombinaisonEasy(combinaison, game_forms_id);
@@ -1144,7 +1169,8 @@ void game_forms_easy_last_rule(button_event_t bTouchPanel)
 	detectNeighbors(&isChangeDetected);
 
 	/* Warning: faces[i][HERE] must be 1 or 0 */
-	combinaison = 0x0F & ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
+	combinaison = 0x0F
+			& ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
 
 	/* Click and alone */
 	if ((bTouchPanel == CLICK) && combinaison == 0x00)
@@ -1206,7 +1232,8 @@ void game_forms_hard(button_event_t bTouchPanel)
 	detectNeighbors(&isChangeDetected);
 
 	/* Warning: faces[i][HERE] must be 1 or 0 */
-	combinaison = 0x0F & ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
+	combinaison = 0x0F
+			& ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
 
 	/* Now we can play */
 	colorId = getColorFromCombinaisonHard(combinaison, game_forms_id);
@@ -1265,7 +1292,8 @@ void game_forms_custom(button_event_t bTouchPanel)
 	detectNeighbors(&isChangeDetected);
 
 	/* Warning: faces[i][HERE] must be 1 or 0 */
-	combinaison = 0x0F & ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
+	combinaison = 0x0F
+			& ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1) + faces[3]);
 
 	/* Now we can play */
 	colorId = getColorFromCombinaisonCustom(combinaison);

@@ -9,16 +9,6 @@
 #ifndef __BUTTON_H__
 #define __BUTTON_H__
 
-/*
- Gestion de l'interrupteur
- int b = checkButton();
- if (b == 1) clickEvent();
- if (b == 2) doubleClickEvent();
- if (b == 3) holdEvent();
- if (b == 4) longHoldEvent();
- }
- */
-
 // Button
 #define NB_BUTTONS				2
 #define LED_BUTTON_MODE_PIN		4
@@ -31,17 +21,28 @@
 #define LONGHOLDTIME 	4000	// ms long hold period: how long to wait for press+hold event
 
 // Other button variables
-boolean buttonVal[NB_BUTTONS] = { HIGH }; 	// value read from button
-boolean buttonLast[NB_BUTTONS] = { HIGH }; 	// buffered value of the button's previous state
-boolean DCwaiting[NB_BUTTONS] = { false }; 	// whether we're waiting for a double click (down)
-boolean DConUp[NB_BUTTONS] = { false }; 	// whether to register a double click on next release, or whether to wait and click
-boolean singleOK[NB_BUTTONS] = { true }; 	// whether it's OK to do a single click
-long downTime[NB_BUTTONS] = { -1 }; 		// time the button was pressed down
-long upTime[NB_BUTTONS] = { -1 }; 			// time the button was released
-boolean ignoreUp[NB_BUTTONS] = { false }; 	// whether to ignore the button release because the click+hold was triggered
-boolean waitForUp[NB_BUTTONS] = { false }; 	// when held, whether to wait for the up event
-boolean holdEventPast[NB_BUTTONS] = { false }; // whether or not the hold event happened already
-boolean longHoldEventPast[NB_BUTTONS] = { false }; // whether or not the long hold event happened already
+boolean buttonVal[NB_BUTTONS] =
+{ HIGH }; 	// value read from button
+boolean buttonLast[NB_BUTTONS] =
+{ HIGH }; 	// buffered value of the button's previous state
+boolean DCwaiting[NB_BUTTONS] =
+{ false }; 	// whether we're waiting for a double click (down)
+boolean DConUp[NB_BUTTONS] =
+{ false }; // whether to register a double click on next release, or whether to wait and click
+boolean singleOK[NB_BUTTONS] =
+{ true }; 	// whether it's OK to do a single click
+long downTime[NB_BUTTONS] =
+{ -1 }; 		// time the button was pressed down
+long upTime[NB_BUTTONS] =
+{ -1 }; 			// time the button was released
+boolean ignoreUp[NB_BUTTONS] =
+{ false }; // whether to ignore the button release because the click+hold was triggered
+boolean waitForUp[NB_BUTTONS] =
+{ false }; 	// when held, whether to wait for the up event
+boolean holdEventPast[NB_BUTTONS] =
+{ false }; // whether or not the hold event happened already
+boolean longHoldEventPast[NB_BUTTONS] =
+{ false }; // whether or not the long hold event happened already
 
 /*
  Run checkButton() to retrieve a button event:
@@ -74,7 +75,8 @@ button_event_t checkButton(uint8_t pin)
 	buttonVal[idx] = digitalRead(pin);
 
 	// Button pressed down
-	if (buttonVal[idx] == LOW && buttonLast[idx] == HIGH && (millis() - upTime[idx]) > DEBOUNCE)
+	if (buttonVal[idx]
+			== LOW&& buttonLast[idx] == HIGH && (millis() - upTime[idx]) > DEBOUNCE)
 	{
 		downTime[idx] = millis();
 		ignoreUp[idx] = false;
@@ -82,14 +84,16 @@ button_event_t checkButton(uint8_t pin)
 		singleOK[idx] = true;
 		holdEventPast[idx] = false;
 		longHoldEventPast[idx] = false;
-		if ((millis() - upTime[idx]) < DCGAP && DConUp[idx] == false && DCwaiting[idx] == true)
+		if ((millis() - upTime[idx]) < DCGAP && DConUp[idx] == false
+				&& DCwaiting[idx] == true)
 			DConUp[idx] = true;
 		else
 			DConUp[idx] = false;
 		DCwaiting[idx] = false;
 	}
 // Button released
-	else if (buttonVal[idx] == HIGH && buttonLast[idx] == LOW && (millis() - downTime[idx]) > DEBOUNCE)
+	else if (buttonVal[idx]
+			== HIGH&& buttonLast[idx] == LOW && (millis() - downTime[idx]) > DEBOUNCE)
 	{
 		if (not ignoreUp[idx])
 		{
@@ -108,7 +112,8 @@ button_event_t checkButton(uint8_t pin)
 		}
 	}
 // Test for normal click event: DCGAP expired
-	if (buttonVal[idx] == HIGH && (millis() - upTime[idx]) >= DCGAP && DCwaiting[idx] == true && DConUp[idx] == false
+	if (buttonVal[idx] == HIGH && (millis() - upTime[idx]) >= DCGAP
+			&& DCwaiting[idx] == true && DConUp[idx] == false
 			&& singleOK[idx] == true)
 	{
 		event = CLICK;
@@ -162,7 +167,7 @@ button_event_t checkButtonStatus(uint8_t pin)
 	buttonVal[idx] = digitalRead(pin);
 
 	/* Button is low, notify*/
-	if(buttonVal[idx] == LOW)
+	if (buttonVal[idx] == LOW)
 	{
 		event = CLICK;
 	}

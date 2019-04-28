@@ -52,7 +52,8 @@ boolean games_forms_update(color_t previous_color, color_t current_color)
 	return changeDetected;
 }
 
-boolean games_forms_update_combi(color_t previous_color, uint8_t faces[NB_FACES])
+boolean games_forms_update_combi(color_t previous_color,
+		uint8_t faces[NB_FACES])
 {
 	boolean changeDetected = false;
 
@@ -60,8 +61,9 @@ boolean games_forms_update_combi(color_t previous_color, uint8_t faces[NB_FACES]
 	if (previous_color != colorId)
 	{
 		/* Display new color*/
-		setLedringFourPixels((color_t)(faces[0] * colorId), (color_t)(faces[1] * colorId),
-				(color_t)(faces[2] * colorId), (color_t)(faces[3] * colorId), VALUE_COLOR_MAX);
+		setLedringFourPixels((color_t)(faces[0] * colorId),
+				(color_t)(faces[1] * colorId), (color_t)(faces[2] * colorId),
+				(color_t)(faces[3] * colorId), VALUE_COLOR_MAX);
 
 		/* Notify change */
 		changeDetected = true;
@@ -70,7 +72,8 @@ boolean games_forms_update_combi(color_t previous_color, uint8_t faces[NB_FACES]
 	return changeDetected;
 }
 
-void games_forms_store_last_color(color_t previous_color, color_t current_color, color_t* last_color)
+void games_forms_store_last_color(color_t previous_color, color_t current_color,
+		color_t* last_color)
 {
 	/* Update color if necessary*/
 	if (previous_color == current_color)
@@ -90,7 +93,8 @@ void games_forms_store_last_color(color_t previous_color, color_t current_color,
 	}
 }
 
-boolean games_forms_idle_check(uint8_t nb_of_neighbors, boolean changeDetected, boolean* longTimeoutReached)
+boolean games_forms_idle_check(uint8_t nb_of_neighbors, boolean changeDetected,
+		boolean* longTimeoutReached)
 {
 	boolean goIdle = false;
 
@@ -103,18 +107,19 @@ boolean games_forms_idle_check(uint8_t nb_of_neighbors, boolean changeDetected, 
 	/* If still 0 neighbors */
 	if (nb_of_neighbors == 0)
 	{
-		if (((millis() > ALONE_TIMEOUT_MS) && (millis() - previousMillisAlone >= ALONE_TIMEOUT_MS))
+		if (((millis() > ALONE_TIMEOUT_MS)
+				&& (millis() - previousMillisAlone >= ALONE_TIMEOUT_MS))
 				|| (millis() < ALONE_TIMEOUT_MS))
 		{
 			goIdle = true;
 
-			if(millis() - previousMillisAlone >= LONG_ALONE_TIMEOUT_MS)
+			if (millis() - previousMillisAlone >= LONG_ALONE_TIMEOUT_MS)
 			{
 				*longTimeoutReached = true;
 			}
 
 #ifdef DEBUG_SERIAL
-			Serial.println("goIdle is true ");
+			//Serial.println("goIdle is true ");
 #endif
 		}
 	}

@@ -32,8 +32,8 @@ const uint8_t DETECTFACE4 = A3;
 
 #define NB_FACES			4
 uint8_t faces[NB_FACES];
-uint8_t detect_faces[NB_FACES] = { DETECTFACE1, DETECTFACE2, DETECTFACE3, DETECTFACE4 };
-
+uint8_t detect_faces[NB_FACES] =
+{ DETECTFACE1, DETECTFACE2, DETECTFACE3, DETECTFACE4 };
 
 void initDetectNeighbors(void)
 {

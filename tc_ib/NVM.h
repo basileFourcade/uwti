@@ -88,7 +88,8 @@ void checkNVMConfigData(void)
 	bool resetNVMNeeded = false;
 
 	/* First read control value */
-	for (uint8_t i = NVM_CONTROL_OFF; i < NVM_CONTROL_OFF + NVM_CONTROL_SIZE; i++)
+	for (uint8_t i = NVM_CONTROL_OFF; i < NVM_CONTROL_OFF + NVM_CONTROL_SIZE;
+			i++)
 	{
 		value = EEPROM.read(i);
 		if (value != NVM_CONTROL_VALUE)
@@ -101,35 +102,36 @@ void checkNVMConfigData(void)
 	if (!resetNVMNeeded)
 	{
 		/* Then check version */
-		for (uint8_t i = NVM_VERSION_OFF; i < NVM_VERSION_OFF + NVM_VERSION_SIZE; i++)
+		for (uint8_t i = NVM_VERSION_OFF;
+				i < NVM_VERSION_OFF + NVM_VERSION_SIZE; i++)
 		{
 			value = EEPROM.read(i);
 			switch (i)
 			{
-				case NVM_VERSION_OFF:
-					if (value < NVM_VERSION_MAJOR)
-					{
-						resetNVMNeeded = true;
-					}
-					break;
-				case (NVM_VERSION_OFF + 1):
-					if (value < NVM_VERSION_MINOR)
-					{
-						resetNVMNeeded = true;
-					}
-					break;
-				case (NVM_VERSION_OFF + 2):
-					if (value < NVM_VERSION_OPT)
-					{
-						resetNVMNeeded = true;
-					}
-					break;
-				case (NVM_VERSION_OFF + 3):
-					if (value < NVM_VERSION_BUILD)
-					{
-						resetNVMNeeded = true;
-					}
-					break;
+			case NVM_VERSION_OFF:
+				if (value < NVM_VERSION_MAJOR)
+				{
+					resetNVMNeeded = true;
+				}
+				break;
+			case (NVM_VERSION_OFF + 1):
+				if (value < NVM_VERSION_MINOR)
+				{
+					resetNVMNeeded = true;
+				}
+				break;
+			case (NVM_VERSION_OFF + 2):
+				if (value < NVM_VERSION_OPT)
+				{
+					resetNVMNeeded = true;
+				}
+				break;
+			case (NVM_VERSION_OFF + 3):
+				if (value < NVM_VERSION_BUILD)
+				{
+					resetNVMNeeded = true;
+				}
+				break;
 			}
 
 			if (resetNVMNeeded)
@@ -147,7 +149,8 @@ void checkNVMConfigData(void)
 	}
 }
 
-void readNVMConfig(uint8_t* mode, uint8_t* game_id, uint8_t* game_lvl, uint8_t* default_color)
+void readNVMConfig(uint8_t* mode, uint8_t* game_id, uint8_t* game_lvl,
+		uint8_t* default_color)
 {
 	*mode = EEPROM.read(NVM_MODE_OFF);
 	*game_id = EEPROM.read(NVM_GAME_FORMS_ID_OFF);

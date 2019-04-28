@@ -27,8 +27,9 @@
 
 #define MAX_COLOR_SQ_NB		2
 
-color_t color_sequence[ 5 * 5 ][ MAX_COLOR_SQ_NB ] = {
-		// game_forms_id 1
+color_t color_sequence[5 * 5][ MAX_COLOR_SQ_NB] =
+{
+// game_forms_id 1
 		{ NO_COLOR, NO_COLOR },
 		{ COLOR_BLUE, COLOR_PURPLE },
 		{ COLOR_GREEN, COLOR_INDIGO },
@@ -61,62 +62,63 @@ color_t color_sequence[ 5 * 5 ][ MAX_COLOR_SQ_NB ] = {
 		{ COLOR_RED, COLOR_YELLOW },
 		{ COLOR_GREEN, COLOR_INDIGO },
 		{ NO_COLOR, NO_COLOR },
-		{ COLOR_BLUE, COLOR_PURPLE },
-		};
+		{ COLOR_BLUE, COLOR_PURPLE }, };
 
 #define LWM_SPEED_MS   		20
-uint8_t speed_sequence[5] = { LWM_SPEED_MS };
+uint8_t speed_sequence[5] =
+{ LWM_SPEED_MS };
 
-color_t getColorSequenceFromCombinaison(uint8_t combinaison, uint8_t game_forms_id, uint8_t index, uint8_t* fade_speed)
+color_t getColorSequenceFromCombinaison(uint8_t combinaison,
+		uint8_t game_forms_id, uint8_t index, uint8_t* fade_speed)
 {
 	color_t local_color = NO_COLOR;
 
 #ifdef DEBUG_SERIAL
-		Serial.println("combinaison " + String(combinaison) +
-				" game_forms_id " + String(game_forms_id) + " index " +  String(index));
+	Serial.println("combinaison " + String(combinaison) +
+			" game_forms_id " + String(game_forms_id) + " index " + String(index));
 #endif
 
 	switch (combinaison)
 	{
-		default:
-		case 0x00:
-			local_color = color_sequence[(game_forms_id - 1) * 5 + 0][index];
-			*fade_speed = speed_sequence[game_forms_id - 1];
-			break;
+	default:
+	case 0x00:
+		local_color = color_sequence[(game_forms_id - 1) * 5 + 0][index];
+		*fade_speed = speed_sequence[game_forms_id - 1];
+		break;
 
-			// 1 face
-		case 0x08:
-		case 0x04:
-		case 0x02:
-		case 0x01:
-			local_color = color_sequence[(game_forms_id - 1) * 5 + 1][index];
-			*fade_speed = speed_sequence[game_forms_id - 1];
-			break;
+		// 1 face
+	case 0x08:
+	case 0x04:
+	case 0x02:
+	case 0x01:
+		local_color = color_sequence[(game_forms_id - 1) * 5 + 1][index];
+		*fade_speed = speed_sequence[game_forms_id - 1];
+		break;
 
-			// 2 faces oppos�es
-		case 0x0A:
-		case 0x05:
-			local_color = color_sequence[(game_forms_id - 1) * 5 + 2][index];
-			*fade_speed = speed_sequence[game_forms_id - 1];
-			break;
+		// 2 faces oppos�es
+	case 0x0A:
+	case 0x05:
+		local_color = color_sequence[(game_forms_id - 1) * 5 + 2][index];
+		*fade_speed = speed_sequence[game_forms_id - 1];
+		break;
 
-			// 2 faces adjacentes
-		case 0x0C:
-		case 0x06:
-		case 0x03:
-		case 0x09:
-			local_color = color_sequence[(game_forms_id - 1) * 5 + 3][index];
-			*fade_speed = speed_sequence[game_forms_id - 1];
-			break;
+		// 2 faces adjacentes
+	case 0x0C:
+	case 0x06:
+	case 0x03:
+	case 0x09:
+		local_color = color_sequence[(game_forms_id - 1) * 5 + 3][index];
+		*fade_speed = speed_sequence[game_forms_id - 1];
+		break;
 
-			// 3 faces
-		case 0x0E:
-		case 0x07:
-		case 0x0B:
-		case 0x0D:
-			local_color = color_sequence[(game_forms_id - 1) * 5 + 4][index];
-			*fade_speed = speed_sequence[game_forms_id - 1];
-			break;
+		// 3 faces
+	case 0x0E:
+	case 0x07:
+	case 0x0B:
+	case 0x0D:
+		local_color = color_sequence[(game_forms_id - 1) * 5 + 4][index];
+		*fade_speed = speed_sequence[game_forms_id - 1];
+		break;
 	}
 
 	return local_color;

@@ -40,7 +40,7 @@ typedef enum
 	MODE_3_GAME_V2 = 9,
 	MODE_4_CUSTOM_V2 = 10,
 	NB_OF_MODE = 11,
-} mode_t;
+}mode_t;
 #elif defined(CONFIG_3_MODES)
 typedef enum
 {
@@ -48,7 +48,7 @@ typedef enum
 	MODE_2A_GAME = 1,
 	MODE_2B_GAME = 2,
 	NB_OF_MODE = 3,
-} mode_t;
+}mode_t;
 #endif
 
 #endif // __MODE_H__
