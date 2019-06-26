@@ -29,8 +29,8 @@ uint32_t previousMillisLastColor = 0;
 #define LAST_COLOR_TIMEOUT_MS		2000
 
 uint32_t previousMillisAlone = 0;
-#define ALONE_TIMEOUT_MS			5000
 #define LONG_ALONE_TIMEOUT_MS		5*60000
+#define VERY_LONG_ALONE_TIMEOUT_MS	10*60000
 
 boolean games_forms_update(color_t previous_color, color_t current_color)
 {
@@ -52,75 +52,36 @@ boolean games_forms_update(color_t previous_color, color_t current_color)
 	return changeDetected;
 }
 
-boolean games_forms_update_combi(color_t previous_color,
-		uint8_t faces[NB_FACES])
-{
-	boolean changeDetected = false;
-
-	/* Update color if necessary*/
-	if (previous_color != colorId)
-	{
-		/* Display new color*/
-		setLedringFourPixels((color_t)(faces[0] * colorId),
-				(color_t)(faces[1] * colorId), (color_t)(faces[2] * colorId),
-				(color_t)(faces[3] * colorId), VALUE_COLOR_MAX);
-
-		/* Notify change */
-		changeDetected = true;
-	}
-
-	return changeDetected;
-}
-
-void games_forms_store_last_color(color_t previous_color, color_t current_color,
-		color_t* last_color)
-{
-	/* Update color if necessary*/
-	if (previous_color == current_color)
-	{
-		if (millis() - previousMillisLastColor >= LAST_COLOR_TIMEOUT_MS)
-		{
-			/* If colorId has been there sufficient time, store it */
-			/* And it is not NO_COLOR*/
-			if (current_color != NO_COLOR)
-			{
-				*last_color = current_color;
-#ifdef DEBUG_SERIAL
-				Serial.println("lastColorId = " + String(* last_color));
-#endif
-			}
-		}
-	}
-}
-
 boolean games_forms_idle_check(uint8_t nb_of_neighbors, boolean changeDetected,
-		boolean* longTimeoutReached)
+		boolean* longTimeoutReached, boolean* veryLongTimeoutReached, color_t* randColor)
 {
 	boolean goIdle = false;
 
 	if (nb_of_neighbors == 0 && changeDetected)
 	{
-		// Arm timer
+		/* Arm timer */
 		previousMillisAlone = millis();
+
+		/* Pick up a random color */
+		*randColor = (color_t) random(NO_COLOR + 1, NB_OF_COLOR);
+#ifdef DEBUG_SERIAL
+		Serial.println(" Random colorId " + String(*randColor));
+#endif
 	}
 
 	/* If still 0 neighbors */
 	if (nb_of_neighbors == 0)
 	{
-		if (((millis() > ALONE_TIMEOUT_MS)
-				&& (millis() - previousMillisAlone >= ALONE_TIMEOUT_MS))
-				|| (millis() < ALONE_TIMEOUT_MS))
+		if ((millis() - previousMillisAlone >= LONG_ALONE_TIMEOUT_MS))
 		{
 			goIdle = true;
 
-			if (millis() - previousMillisAlone >= LONG_ALONE_TIMEOUT_MS)
-			{
-				*longTimeoutReached = true;
-			}
+			*longTimeoutReached = true;
 
-#ifdef DEBUG_SERIAL
-			//Serial.println("goIdle is true ");
-#endif
+			if (millis() - previousMillisAlone >= VERY_LONG_ALONE_TIMEOUT_MS)
+			{
+				*veryLongTimeoutReached = true;
+			}
 		}
 	}
 

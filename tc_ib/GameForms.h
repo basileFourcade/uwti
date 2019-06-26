@@ -259,7 +259,7 @@ color_t getColorFromCombinaisonEasy(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x07:
 		case 0x0B:
 		case 0x0D:
-			local_color = NO_COLOR;
+			local_color = COLOR_WHITE;
 			break;
 		}
 	}
@@ -299,7 +299,7 @@ color_t getColorFromCombinaisonEasy(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x07:
 		case 0x0B:
 		case 0x0D:
-			local_color = NO_COLOR;
+			local_color = COLOR_WHITE;
 			break;
 		}
 	}
@@ -339,7 +339,7 @@ color_t getColorFromCombinaisonEasy(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x07:
 		case 0x0B:
 		case 0x0D:
-			local_color = NO_COLOR;
+			local_color = COLOR_WHITE;
 			break;
 		}
 	}
@@ -379,7 +379,7 @@ color_t getColorFromCombinaisonEasy(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x07:
 		case 0x0B:
 		case 0x0D:
-			local_color = NO_COLOR;
+			local_color = COLOR_WHITE;
 			break;
 
 		}
@@ -412,7 +412,7 @@ color_t getColorFromCombinaisonEasy(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x06:
 		case 0x03:
 		case 0x09:
-			local_color = NO_COLOR;
+			local_color = COLOR_WHITE;
 			break;
 
 			// 3 faces
@@ -432,53 +432,6 @@ color_t getColorFromCombinaisonEasy(uint8_t combinaison, uint8_t game_forms_id)
 	}
 
 	return local_color;
-}
-
-uint8_t idx_allowed_color = 0;
-color_t allowedColors[NB_OF_COLOR] =
-{ NO_COLOR, COLOR_GREEN, COLOR_RED, COLOR_BLUE, COLOR_YELLOW, COLOR_INDIGO,
-		COLOR_PURPLE, COLOR_WHITE, COLOR_ORANGE };
-
-void initAllowedCombinaison(void)
-{
-	idx_allowed_color = 1;
-}
-
-color_t getColorFromAllowedCombinaisonEasy(color_t color)
-{
-	uint8_t i = 0;
-	color_t allowed_color = allowedColors[0];
-
-#ifdef DEBUG_SERIAL
-	Serial.println("color requested is " + String(color) );
-#endif
-
-	for (i = 0; i < sizeof(allowedColors); i++)
-	{
-		/* Quit the loop if necessary */
-		if (i > idx_allowed_color)
-		{
-			break;
-		}
-
-		/* Check if requested color is allowed */
-		if (color == allowedColors[i])
-		{
-			allowed_color = allowedColors[i];
-
-			/* If highest color reached, increase the limit */
-			if (idx_allowed_color == i)
-			{
-				idx_allowed_color++;
-			}
-		}
-	}
-
-#ifdef DEBUG_SERIAL
-	Serial.println("color allowed is " + String(allowed_color) );
-#endif
-
-	return allowed_color;
 }
 
 color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
@@ -489,15 +442,15 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 	{
 		switch (combinaison)
 		{
-		default:
 		case 0x00:
 			local_color = NO_COLOR;
 			break;
+
 		case 0x08:
 			local_color = COLOR_PURPLE;
 			break;
 		case 0x04:
-			local_color = COLOR_WHITE;
+			local_color = COLOR_INDIGO;
 			break;
 		case 0x02:
 			local_color = COLOR_YELLOW;
@@ -511,16 +464,29 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x09:
 			local_color = COLOR_GREEN;
 			break;
+
+		default:
+		case 0x05:
+		case 0x0C:
+		case 0x06:
+		case 0x03:
+		case 0x0E:
+		case 0x07:
+		case 0x0B:
+		case 0x0D:
+			local_color = COLOR_WHITE;
+			break;
 		}
 	}
 	else if (game_forms_id == 2)
 	{
 		switch (combinaison)
 		{
-		default:
+
 		case 0x00:
 			local_color = NO_COLOR;
 			break;
+
 		case 0x08:
 			local_color = COLOR_RED;
 			break;
@@ -537,6 +503,18 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 			local_color = COLOR_PURPLE;
 			break;
 		case 0x06:
+			local_color = COLOR_INDIGO;
+			break;
+
+		default:
+		case 0x0A:
+		case 0x05:
+		case 0x0C:
+		case 0x09:
+		case 0x0E:
+		case 0x07:
+		case 0x0B:
+		case 0x0D:
 			local_color = COLOR_WHITE;
 			break;
 		}
@@ -545,7 +523,6 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 	{
 		switch (combinaison)
 		{
-		default:
 		case 0x00:
 			local_color = NO_COLOR;
 			break;
@@ -562,10 +539,22 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 			local_color = COLOR_YELLOW;
 			break;
 		case 0x06:
-			local_color = COLOR_WHITE;
+			local_color = COLOR_INDIGO;
 			break;
 		case 0x0A:
 			local_color = COLOR_PURPLE;
+			break;
+
+		default:
+		case 0x05:
+		case 0x0C:
+		case 0x03:
+		case 0x09:
+		case 0x0E:
+		case 0x07:
+		case 0x0B:
+		case 0x0D:
+			local_color = COLOR_WHITE;
 			break;
 		}
 	}
@@ -573,7 +562,6 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 	{
 		switch (combinaison)
 		{
-		default:
 		case 0x00:
 			local_color = NO_COLOR;
 			break;
@@ -582,7 +570,7 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 			local_color = COLOR_BLUE;
 			break;
 		case 0x02:
-			local_color = COLOR_WHITE;
+			local_color = COLOR_INDIGO;
 			break;
 		case 0x01:
 			local_color = COLOR_PURPLE;
@@ -596,20 +584,27 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x09:
 			local_color = COLOR_GREEN;
 			break;
+
+		default:
+		case 0x0C:
+		case 0x06:
+		case 0x03:
+		case 0x0E:
+		case 0x07:
+		case 0x0B:
+		case 0x0D:
+			local_color = COLOR_WHITE;
+			break;
 		}
 	}
 	else if (game_forms_id == 5)
 	{
 		switch (combinaison)
 		{
-		default:
 		case 0x00:
-		case 0x08:
-		case 0x04:
-		case 0x02:
-		case 0x01:
 			local_color = NO_COLOR;
 			break;
+
 		case 0x0F:
 			local_color = COLOR_BLUE;
 			break;
@@ -620,13 +615,26 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 			local_color = COLOR_PURPLE;
 			break;
 		case 0x0A:
-			local_color = COLOR_WHITE;
+			local_color = COLOR_INDIGO;
 			break;
 		case 0x03:
 			local_color = COLOR_RED;
 			break;
 		case 0x07:
 			local_color = COLOR_YELLOW;
+			break;
+
+		default:
+		case 0x08:
+		case 0x04:
+		case 0x02:
+		case 0x01:
+		case 0x05:
+		case 0x06:
+		case 0x0E:
+		case 0x0B:
+		case 0x0D:
+			local_color = COLOR_WHITE;
 			break;
 		}
 	}
@@ -636,77 +644,7 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 		Serial.println("Unknown game_forms_id!");
 #endif
 	}
-
 	return local_color;
 }
-
-#define NUMBER_OF_COMBINAISONS	6
-color_t combinaisonCustom[NUMBER_OF_COMBINAISONS] =
-{ NO_COLOR };
-#define IDX_0_FACES			0
-#define IDX_1_FACES			1
-#define IDX_2_ADJ_FACES		2
-#define IDX_2_OP_FACES		3
-#define IDX_3_FACES			4
-#define IDX_4_FACES			5
-
-color_t getColorFromCombinaisonCustom(uint8_t combinaison)
-{
-	color_t local_color = NO_COLOR;
-
-	switch (combinaison)
-	{
-	default:
-	case 0x00:
-		local_color = combinaisonCustom[IDX_0_FACES];
-		break;
-
-		// 1 face
-	case 0x08:
-	case 0x04:
-	case 0x02:
-	case 0x01:
-		local_color = combinaisonCustom[IDX_1_FACES];
-		break;
-
-		// 2 faces adjacentes
-	case 0x0C:
-	case 0x06:
-	case 0x03:
-	case 0x09:
-		local_color = combinaisonCustom[IDX_2_ADJ_FACES];
-		break;
-
-		// 2 faces opposées
-	case 0x0A:
-	case 0x05:
-		local_color = combinaisonCustom[IDX_2_OP_FACES];
-		break;
-
-		// 3 faces
-	case 0x0E:
-	case 0x07:
-	case 0x0B:
-	case 0x0D:
-		local_color = combinaisonCustom[IDX_3_FACES];
-		break;
-
-		// 4 faces
-	case 0x0F:
-		local_color = combinaisonCustom[IDX_4_FACES];
-		break;
-	}
-
-	return local_color;
-}
-#ifdef DEBUG_SERIAL
-void showCombiCustom(void)
-{
-	for(uint8_t i = 0; i < 6; i++ )
-	{
-		Serial.println("combinaisonCustom: " + String(i) + " " + String(combinaisonCustom[i]));
-	}
-}
-#endif
 
 #endif //__GAME_FORMS_H__

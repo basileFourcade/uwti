@@ -21,15 +21,27 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  *******************************************************************************/
-#ifndef __MODE_H__
-#define __MODE_H__
+/*
+ * Battery.h
+ *
+ *  Created on: 28 avr. 2019
+ *      Author: Basile
+ */
 
-/* Modes */
-typedef enum
+#ifndef BATTERY_H_
+#define BATTERY_H_
+
+const uint8_t BATTERY_LEVEL = A2;
+
+uint32_t readBatteryLevel(void)
 {
-	MODE_1_GAME = 0,
-	MODE_2A_GAME = 1,
-	NB_OF_MODE = 2,
-}mode_t;
+	uint32_t sensor_value = analogRead(BATTERY_LEVEL);
 
-#endif // __MODE_H__
+#ifdef DEBUG_SERIAL
+	Serial.println("battery = " + String(sensor_value));
+#endif
+
+	return sensor_value;
+}
+
+#endif /* BATTERY_H_ */

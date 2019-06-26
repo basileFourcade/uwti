@@ -26,26 +26,32 @@
 
 #include <Adafruit_SleepyDog.h>
 #define SLEEPING_TIME			4000
+
+#define SLEEP_NOTIFIY_TEST
+
+#ifdef SLEEP_NOTIFIY_TEST
 #define SLEEP_IN_ID_COLOR		(color_t) COLOR_ORANGE
 #define SLEEP_OUT_ID_COLOR		(color_t) COLOR_ORANGE
+#endif
 
 boolean is_sleeping = false;
 
-boolean go_to_sleep(button_event_t bTouchPanel)
+boolean go_to_sleep(boolean goToSleep)
 {
 	boolean justWakingUp = false;
 
 	/* If sleeping */
 	if (is_sleeping)
 	{
-		if (bTouchPanel != NO_EVENT)
+		if (!goToSleep)
 		{
 			/* wake up */
 			is_sleeping = false;
 
+#ifdef SLEEP_NOTIFIY_TEST
 			/* Notify */
 			doLedRingBlink(SLEEP_OUT_ID_COLOR, 200, 3);
-
+#endif
 			justWakingUp = true;
 		}
 		else
@@ -56,13 +62,14 @@ boolean go_to_sleep(button_event_t bTouchPanel)
 	}
 	else
 	{ /* If NOT sleeping */
-		if (bTouchPanel == HOLD)
+		if (goToSleep)
 		{
 			is_sleeping = true;
 			/* Notify */
+#ifdef SLEEP_NOTIFIY_TEST
 			/* Implicit shut down LEDS */
 			doLedRingBlink(SLEEP_IN_ID_COLOR, 200, 3);
-
+#endif
 			/* Now sleep */
 			Watchdog.sleep(SLEEPING_TIME);
 		}
