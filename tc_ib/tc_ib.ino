@@ -52,6 +52,8 @@ boolean isChangeDetected = false;
 #include <Adafruit_NeoPixel.h>
 #include "LedRing.h"
 
+#define RED_LED_PIN		13
+
 // Variables Etat
 color_t colorId = INITIAL_COLOR;
 color_t randomColorId = NO_COLOR;
@@ -93,11 +95,9 @@ uint32_t previousMillisRule = 0;
 
 /* Sleep Mode Management */
 #include "Battery.h"
-uint32_t previousMillisBattery = 0;
 
 boolean sleepModeRequired = false;
 
-#define RED_LED_PIN	13
 /*****************************************************************************
  * UTILS
  */
@@ -138,11 +138,15 @@ void setup()
 	readNVMConfig((uint8_t *) &modeNVM, &game_forms_id, &unused_1,
 			(uint8_t *) &unused_2);
 
+	setup_init();
+
+	// Init Bat level
+	batteryChargingStatusInit();
+
 #ifdef DEBUG_SERIAL
 	Serial.println(F("setup: End"));
 #endif
 
-	setup_init();
 }
 
 void loop()
@@ -193,13 +197,17 @@ void loop()
 	}
 #endif
 
-	if (millis() - previousMillisBattery >= 1000)
+	/* Battery check */
+	if (batteryChargingStatus())
 	{
-		previousMillisBattery = millis();
-		// DEBUG
-		ledShow12bits((uint16_t)readBatteryLevel());
+		// Action on change detected
+		if(!isCharging)
+		{
+			setLedringColor(NO_COLOR, 0);
+		}
 	}
 
+	batteryChargeNotify();
 }
 
 /*****************************************************************************
@@ -410,7 +418,7 @@ void idle_sleep(button_event_t bTouchPanel, button_event_t bMode,
 #endif
 
 #ifdef DEBUG_SERIAL
-			Serial.println("max_brightness " + String(max_brightness));
+//			Serial.println("max_brightness " + String(max_brightness));
 #endif
 		}
 
@@ -434,9 +442,9 @@ void idle_sleep_blink(button_event_t bTouchPanel, button_event_t bMode,
 }
 
 void idle_sleep_mode(boolean longIdle, boolean veryLongIdle,
-		color_t randColorId)
+		color_t randColorId, uint8_t isBatteryCharging)
 {
-	if (longIdle && !veryLongIdle)
+	if ((longIdle && !veryLongIdle) || isBatteryCharging)
 	{
 		idle_sleep(NO_EVENT, NO_EVENT, randColorId);
 	}
@@ -465,9 +473,9 @@ void game_forms_easy_with_idle_sleep(button_event_t bTouchPanel)
 	goIdle = games_forms_idle_check(nb_of_neighbors, isChangeDetected,
 			&longIdle, &veryLongIdle, &randomColorId);
 
-	if (goIdle)
+	if (goIdle || isCharging)
 	{
-		idle_sleep_mode(longIdle, veryLongIdle, randomColorId);
+		idle_sleep_mode(longIdle, veryLongIdle, randomColorId, isCharging);
 	}
 	else
 	{
@@ -502,9 +510,9 @@ void game_forms_hard_with_idle_sleep(button_event_t bTouchPanel)
 	goIdle = games_forms_idle_check(nb_of_neighbors, isChangeDetected,
 			&longIdle, &veryLongIdle, &randomColorId);
 
-	if (goIdle)
+	if (goIdle || isCharging)
 	{
-		idle_sleep_mode(longIdle, veryLongIdle, randomColorId);
+		idle_sleep_mode(longIdle, veryLongIdle, randomColorId, isCharging);
 	}
 	else
 	{
