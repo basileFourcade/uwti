@@ -69,6 +69,9 @@ boolean go_to_sleep(boolean goToSleep)
 #ifdef SLEEP_NOTIFIY_TEST
 			/* Implicit shut down LEDS */
 			doLedRingBlink(SLEEP_IN_ID_COLOR, 200, 3);
+#else
+			/* Explicitely shut down LEDS */
+			setLedringColor(NO_COLOR, 0);
 #endif
 			/* Now sleep */
 			Watchdog.sleep(SLEEPING_TIME);
