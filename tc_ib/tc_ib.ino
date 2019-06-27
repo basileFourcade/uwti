@@ -23,8 +23,7 @@
  *******************************************************************************/
 
 // Debugging Purpose
-#define DEBUG_SERIAL
-
+//#define DEBUG_SERIAL
 #define SLEEP_MODE
 
 #include <Arduino.h>
@@ -159,7 +158,7 @@ void loop()
 	{
 		Serial.println(
 				"buttonEventMode " + String(buttonEventMode) + " "
-						+ String(millis()));
+				+ String(millis()));
 	}
 #endif
 #ifdef SLEEP_MODE
@@ -201,12 +200,13 @@ void loop()
 	if (batteryChargingStatus())
 	{
 		// Action on change detected
-		if(!isCharging)
+		if (!isCharging)
 		{
 			setLedringColor(NO_COLOR, 0);
 		}
 	}
 
+	/* Notify with RED_LED */
 	batteryChargeNotify();
 }
 
@@ -368,24 +368,8 @@ void init_mode(uint8_t mode)
  */
 
 // MODE SLEEP
-void idle_sleep(button_event_t bTouchPanel, button_event_t bMode,
-		color_t color_idle)
+void idle_sleep(color_t color_idle)
 {
-	(void) bTouchPanel;
-	(void) bMode;
-
-#if 0
-	if(bTouchPanel == CLICK)
-	{
-		fade_speed++;
-	}
-
-	if(bMode == CLICK)
-	{
-		fade_speed--;
-	}
-#endif
-
 	if (millis() - previousMillisFade >= fade_speed)
 	{
 		previousMillisFade = millis();
@@ -405,39 +389,12 @@ void idle_sleep(button_event_t bTouchPanel, button_event_t bMode,
 			fadeWayUp = !fadeWayUp;
 		}
 
-#ifdef DEBUG_SERIAL
-		//Serial.println("brightness " + String(brightness));
-#endif
 		if (brightness == 0)
 		{
-#ifdef USE_SENSOR_LIGHT
-			// 0 to 80 by 2 with 30 ms => 40*30 = 1200 ms
-			max_brightness = getIntensityWithLightSensorValue(readLightSensor());
-			// fade_speed > 40/38 is NOK
-			// fade_speed starting 10 is OK too
-#endif
-
-#ifdef DEBUG_SERIAL
-//			Serial.println("max_brightness " + String(max_brightness));
-#endif
+			/* RFU */
 		}
 
 		setLedringColor(color_idle, brightness);
-	}
-}
-
-// MODE SLEEP BLINK
-#define ILDE_SLEEP_BLINK_MS		5000
-void idle_sleep_blink(button_event_t bTouchPanel, button_event_t bMode,
-		color_t color_idle)
-{
-	(void) bTouchPanel;
-	(void) bMode;
-
-	if (millis() - previousMillisFade >= ILDE_SLEEP_BLINK_MS)
-	{
-		previousMillisFade = millis();
-		doLedRingBlink(color_idle, 200, 2);
 	}
 }
 
@@ -446,7 +403,7 @@ void idle_sleep_mode(boolean longIdle, boolean veryLongIdle,
 {
 	if ((longIdle && !veryLongIdle) || isBatteryCharging)
 	{
-		idle_sleep(NO_EVENT, NO_EVENT, randColorId);
+		idle_sleep(randColorId);
 	}
 	else if (veryLongIdle)
 	{
@@ -456,9 +413,9 @@ void idle_sleep_mode(boolean longIdle, boolean veryLongIdle,
 }
 
 // MODE JEU DES FORMES - EASY - WITH IDLE SLEEP
-void game_forms_easy_with_idle_sleep(button_event_t bTouchPanel)
+void game_forms_easy_with_idle_sleep(button_event_t buttonEventMode)
 {
-	(void) bTouchPanel;
+	(void) buttonEventMode;
 	uint8_t combinaison;
 	color_t previous_color = colorId;
 	uint8_t nb_of_neighbors = 0;
@@ -493,9 +450,9 @@ void game_forms_easy_with_idle_sleep(button_event_t bTouchPanel)
 }
 
 // MODE JEU DES FORMES - HARD - WITH IDLE SLEEP
-void game_forms_hard_with_idle_sleep(button_event_t bTouchPanel)
+void game_forms_hard_with_idle_sleep(button_event_t buttonEventMode)
 {
-	(void) bTouchPanel;
+	(void) buttonEventMode;
 	uint8_t combinaison;
 	color_t previous_color = colorId;
 	uint8_t nb_of_neighbors = 0;

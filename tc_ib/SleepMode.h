@@ -27,7 +27,7 @@
 #include <Adafruit_SleepyDog.h>
 #define SLEEPING_TIME			4000
 
-#define SLEEP_NOTIFIY_TEST
+#undef SLEEP_NOTIFIY_TEST
 
 #ifdef SLEEP_NOTIFIY_TEST
 #define SLEEP_IN_ID_COLOR		(color_t) COLOR_ORANGE
