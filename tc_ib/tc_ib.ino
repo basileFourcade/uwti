@@ -445,7 +445,7 @@ void game_forms_easy_with_idle_sleep(button_event_t buttonEventMode)
 		colorId = getColorFromCombinaisonEasy(combinaison, game_forms_id);
 
 		/* Update led ring */
-		isChangeDetected = games_forms_update(previous_color, colorId);
+		isChangeDetected = games_forms_update(previous_color, colorId, isChangeDetected);
 	}
 }
 
@@ -482,7 +482,7 @@ void game_forms_hard_with_idle_sleep(button_event_t buttonEventMode)
 		colorId = getColorFromCombinaisonHard(combinaison, game_forms_id);
 
 		/* Update led ring */
-		isChangeDetected = games_forms_update(previous_color, colorId);
+		isChangeDetected = games_forms_update(previous_color, colorId, isChangeDetected);
 	}
 }
 

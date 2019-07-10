@@ -32,12 +32,12 @@ uint32_t previousMillisAlone = 0;
 #define LONG_ALONE_TIMEOUT_MS		5*60000
 #define VERY_LONG_ALONE_TIMEOUT_MS	10*60000
 
-boolean games_forms_update(color_t previous_color, color_t current_color)
+boolean games_forms_update(color_t previous_color, color_t current_color, boolean ischangeDetected)
 {
 	boolean changeDetected = false;
 
 	/* Update color if necessary*/
-	if (previous_color != current_color)
+	if ((previous_color != current_color) || ischangeDetected)
 	{
 		/* Display new color*/
 		setLedringColor(current_color, VALUE_COLOR_MAX);
