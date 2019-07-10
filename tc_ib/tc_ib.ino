@@ -430,7 +430,7 @@ void game_forms_easy_with_idle_sleep(button_event_t buttonEventMode)
 	goIdle = games_forms_idle_check(nb_of_neighbors, isChangeDetected,
 			&longIdle, &veryLongIdle, &randomColorId);
 
-	if (goIdle || isCharging)
+	if (goIdle || (isCharging && (nb_of_neighbors == 0)) )
 	{
 		idle_sleep_mode(longIdle, veryLongIdle, randomColorId, isCharging);
 	}
