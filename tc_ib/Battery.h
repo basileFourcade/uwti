@@ -45,8 +45,15 @@ const uint8_t BATTERY_LEVEL = A2;
 
 uint32_t previousMillisBattery = 0;
 uint8_t isCharging = 0;
-uint32_t batLevelPrevious = 0;
-uint32_t batLevelLast = 0;
+
+#define NB_OF_SAMPLES		4
+uint8_t batLevelLast_idx = 0;
+uint32_t batLevelLast[NB_OF_SAMPLES] =
+{ 0 };
+
+#define NB_OF_AVG_VALUES		5
+uint32_t batLevelAvg[NB_OF_AVG_VALUES] =
+{ 0 };
 
 uint32_t previousMillisBlink = 0;
 
@@ -66,8 +73,18 @@ void batteryChargingStatusInit(void)
 	isCharging = 1;
 
 	// Do first measure
-	batLevelLast = readBatteryLevel();
-	batLevelPrevious = batLevelLast;
+	batLevelLast_idx = 0;
+	batLevelLast[batLevelLast_idx] = readBatteryLevel();
+
+	for (uint8_t i = 1; i < NB_OF_SAMPLES; i++)
+	{
+		batLevelLast[i] = batLevelLast[batLevelLast_idx];
+	}
+
+	for (uint8_t i = 1; i < NB_OF_AVG_VALUES; i++)
+	{
+		batLevelAvg[i] = batLevelLast[batLevelLast_idx];
+	}
 
 	previousMillisBattery = BATTERY_READ_MS;
 }
@@ -81,14 +98,29 @@ uint8_t batteryChargingStatus()
 	{
 		previousMillisBattery = millis();
 
-		batLevelPrevious = batLevelLast;
-		batLevelLast = readBatteryLevel();
+		/* Get a new measure */
+		batLevelLast[batLevelLast_idx++] = readBatteryLevel();
 
-		delta = batLevelLast - batLevelPrevious;
+		batLevelLast_idx = batLevelLast_idx % NB_OF_SAMPLES;
+
+		/* Shift the avg measure */
+		for (uint8_t i = 0; i < (NB_OF_AVG_VALUES - 1); i++)
+		{
+			batLevelAvg[i] = batLevelAvg[i + 1];
+#ifdef DEBUG_SERIAL
+			Serial.println("batLevelAvg " + String(i) + " " + String(batLevelAvg[i]));
+#endif
+		}
+		/* compute a new one */
+		batLevelAvg[NB_OF_AVG_VALUES - 1] = (batLevelLast[0] + batLevelLast[1]
+				+ batLevelLast[2] + batLevelLast[3]) >> 2;
+
+		/* then compare the latest with the oldest */
+		delta = batLevelAvg[NB_OF_AVG_VALUES - 1] - batLevelAvg[0];
 
 #ifdef DEBUG_SERIAL
-		Serial.println("batLevelPrevious = " + String(batLevelPrevious) +
-				" batLevelLast = " + String(batLevelLast) +
+		Serial.println("batLevelAvg[0] = " + String(batLevelAvg[0]) +
+				" batLevelAvg[4] = " + String(batLevelAvg[NB_OF_AVG_VALUES - 1]) +
 				" delta = " + String(delta));
 #endif
 
@@ -117,7 +149,7 @@ void batteryChargeNotify(void)
 {
 	uint32_t blink_speed = 0;
 
-	if (batLevelLast < BATTERY_LEVEL_10)
+	if (batLevelAvg[NB_OF_AVG_VALUES - 1] < BATTERY_LEVEL_10)
 	{
 		// Blink fast starting now
 		if (!blink_speed)
@@ -126,7 +158,7 @@ void batteryChargeNotify(void)
 		}
 		blink_speed = BLINK_SPEED_10;
 	}
-	else if (batLevelLast < BATTERY_LEVEL_20)
+	else if (batLevelAvg[NB_OF_AVG_VALUES - 1] < BATTERY_LEVEL_20)
 	{
 		// Blink normal starting now
 		if (!blink_speed)
