@@ -36,9 +36,10 @@
 
 boolean is_sleeping = false;
 
-boolean go_to_sleep(boolean goToSleep)
+boolean go_to_sleep(boolean goToSleep, uint32_t* millisSlept)
 {
 	boolean justWakingUp = false;
+	*millisSlept = 0;
 
 	/* If sleeping */
 	if (is_sleeping)
@@ -57,7 +58,7 @@ boolean go_to_sleep(boolean goToSleep)
 		else
 		{
 			/* Keep sleeping */
-			Watchdog.sleep(SLEEPING_TIME);
+			*millisSlept = Watchdog.sleep(SLEEPING_TIME);
 		}
 	}
 	else
@@ -74,7 +75,7 @@ boolean go_to_sleep(boolean goToSleep)
 			setLedringColor(NO_COLOR, 0);
 #endif
 			/* Now sleep */
-			Watchdog.sleep(SLEEPING_TIME);
+			*millisSlept = Watchdog.sleep(SLEEPING_TIME);
 		}
 	}
 

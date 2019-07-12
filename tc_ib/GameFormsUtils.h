@@ -52,6 +52,12 @@ boolean games_forms_update(color_t previous_color, color_t current_color, boolea
 	return changeDetected;
 }
 
+void game_forms_reset_idle(void)
+{
+	/* Arm timer */
+	previousMillisAlone = millis();
+}
+
 boolean games_forms_idle_check(uint8_t nb_of_neighbors, boolean changeDetected,
 		boolean* longTimeoutReached, boolean* veryLongTimeoutReached, color_t* randColor)
 {
@@ -59,8 +65,7 @@ boolean games_forms_idle_check(uint8_t nb_of_neighbors, boolean changeDetected,
 
 	if (nb_of_neighbors == 0 && changeDetected)
 	{
-		/* Arm timer */
-		previousMillisAlone = millis();
+		game_forms_reset_idle();
 
 		/* Pick up a random color */
 		*randColor = (color_t) random(NO_COLOR + 1, NB_OF_COLOR);

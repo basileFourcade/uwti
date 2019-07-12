@@ -89,10 +89,20 @@ void batteryChargingStatusInit(void)
 	previousMillisBattery = BATTERY_READ_MS;
 }
 
-uint8_t batteryChargingStatus()
+uint8_t batteryChargingStatus(uint32_t millis_while_sleeping)
 {
 	uint8_t changeDetected = 0;
 	int32_t delta = 0;
+
+	// Sleep does not increment millis
+	if (previousMillisBattery > millis_while_sleeping)
+	{
+		previousMillisBattery -= millis_while_sleeping;
+	}
+	else
+	{
+		previousMillisBattery = 0;
+	}
 
 	if (millis() - previousMillisBattery >= BATTERY_READ_MS)
 	{
@@ -128,6 +138,13 @@ uint8_t batteryChargingStatus()
 		{
 			isCharging = 1;
 			changeDetected = 1;
+
+#undef TEST_BAT_DELTA
+#ifdef TEST_BAT_DELTA
+			ledShow12bits(delta);
+			delay(1000);
+#endif
+
 #ifdef DEBUG_SERIAL
 			Serial.println("isCharging = 1");
 #endif
@@ -139,13 +156,26 @@ uint8_t batteryChargingStatus()
 #ifdef DEBUG_SERIAL
 			Serial.println("isCharging = 0");
 #endif
+
+#ifdef TEST_BAT_DELTA
+			ledShow12bits(-delta);
+			delay(1000);
+#endif
+
 		}
+#undef TEST_BAT
+#ifdef TEST_BAT
+		ledShow12bits(batLevelAvg[NB_OF_AVG_VALUES - 1]);
+		delay(500);
+		setLedringColor(NO_COLOR, 0);
+#endif
+
 	}
 
 	return changeDetected;
 }
 
-void batteryChargeNotify(void)
+void batteryChargeNotify(uint32_t millis_while_sleeping)
 {
 	uint32_t blink_speed = 0;
 
@@ -175,6 +205,16 @@ void batteryChargeNotify(void)
 
 	if (blink_speed)
 	{
+		// Sleep does not increment millis
+		if (previousMillisBlink > millis_while_sleeping)
+		{
+			previousMillisBlink -= millis_while_sleeping;
+		}
+		else
+		{
+			previousMillisBlink = 0;
+		}
+
 		if ((millis() - previousMillisBlink) > blink_speed)
 		{
 			digitalWrite(RED_LED_PIN, 1);
