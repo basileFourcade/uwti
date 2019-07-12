@@ -82,10 +82,6 @@ mode_t modeNVM = MODE_1_GAME;
 
 boolean modeConfig = false;
 
-boolean showingRules = false;
-uint32_t previousMillisRule = 0;
-#define SHOWRULE_TIMEOUT_MS			2000
-
 /* NVM */
 #include "NVM.h"
 
@@ -96,6 +92,7 @@ uint32_t previousMillisRule = 0;
 #include "Battery.h"
 
 boolean sleepModeRequired = false;
+uint32_t millisSlept = 0;
 
 /*****************************************************************************
  * UTILS
@@ -164,8 +161,8 @@ void loop()
 #ifdef SLEEP_MODE
 	if (is_sleeping)
 	{
-		/* Check if neigburs */
-		if (detectNeighbors(&isChangeDetected))
+		/* Check if neigbors or charging */
+		if (detectNeighbors(&isChangeDetected) || isCharging)
 		{
 			/* If yes stop sleep mode */
 			sleepModeRequired = false;
@@ -189,15 +186,17 @@ void loop()
 
 #ifdef SLEEP_MODE
 	// Check if sleep is required
-	if (go_to_sleep(sleepModeRequired))
+	if (go_to_sleep(sleepModeRequired, &millisSlept))
 	{
 		/* Just wake up, reset a few things */
 		reset_init();
+		/* Reset Idle timers */
+		game_forms_reset_idle();
 	}
 #endif
 
-	/* Battery check */
-	if (batteryChargingStatus())
+	/* Battery check - provide millisSlept */
+	if (batteryChargingStatus(millisSlept))
 	{
 		// Action on change detected
 		if (!isCharging)
@@ -206,8 +205,8 @@ void loop()
 		}
 	}
 
-	/* Notify with RED_LED */
-	batteryChargeNotify();
+	/* Notify with RED_LED - - provide millisSlept */
+	batteryChargeNotify(millisSlept);
 }
 
 /*****************************************************************************
