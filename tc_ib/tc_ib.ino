@@ -205,8 +205,8 @@ void loop()
 		}
 	}
 
-	/* Notify with RED_LED - - provide millisSlept */
-	batteryChargeNotify(millisSlept);
+	/* Notify with RED_LED */
+	batteryChargeNotify();
 }
 
 /*****************************************************************************

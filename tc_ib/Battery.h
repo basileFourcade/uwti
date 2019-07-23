@@ -35,6 +35,7 @@
 #define BATTERY_READ_MS		1000
 
 #define BATTERY_LEVEL_20	575
+#define BATTERY_LEVEL_15	567
 #define BATTERY_LEVEL_10	559
 
 #define BLINK_SPEED_20		30000
@@ -70,7 +71,7 @@ uint32_t readBatteryLevel(void)
 
 void batteryChargingStatusInit(void)
 {
-	isCharging = 1;
+	isCharging = 0;
 
 	// Do first measure
 	batLevelLast_idx = 0;
@@ -97,7 +98,14 @@ uint8_t batteryChargingStatus(uint32_t millis_while_sleeping)
 	// Sleep does not increment millis
 	if (previousMillisBattery > millis_while_sleeping)
 	{
-		previousMillisBattery -= millis_while_sleeping;
+		if(millis_while_sleeping > BATTERY_READ_MS)
+		{
+			previousMillisBattery -= BATTERY_READ_MS;
+		}
+		else
+		{
+			previousMillisBattery = 0;
+		}
 	}
 	else
 	{
@@ -134,6 +142,7 @@ uint8_t batteryChargingStatus(uint32_t millis_while_sleeping)
 				" delta = " + String(delta));
 #endif
 
+#ifdef TEST_IF_CHARGING
 		if (delta >= GAP_WHEN_CHARGE)
 		{
 			isCharging = 1;
@@ -169,63 +178,24 @@ uint8_t batteryChargingStatus(uint32_t millis_while_sleeping)
 		delay(500);
 		setLedringColor(NO_COLOR, 0);
 #endif
-
+#endif
 	}
 
 	return changeDetected;
 }
 
-void batteryChargeNotify(uint32_t millis_while_sleeping)
+void batteryChargeNotify(void)
 {
-	uint32_t blink_speed = 0;
 
-	if (batLevelAvg[NB_OF_AVG_VALUES - 1] < BATTERY_LEVEL_10)
+	if (batLevelAvg[NB_OF_AVG_VALUES - 1] < BATTERY_LEVEL_15)
 	{
-		// Blink fast starting now
-		if (!blink_speed)
-		{
-			previousMillisBlink = blink_speed;
-		}
-		blink_speed = BLINK_SPEED_10;
-	}
-	else if (batLevelAvg[NB_OF_AVG_VALUES - 1] < BATTERY_LEVEL_20)
-	{
-		// Blink normal starting now
-		if (!blink_speed)
-		{
-			previousMillisBlink = blink_speed;
-		}
-		blink_speed = BLINK_SPEED_20;
+		/* Notify*/
+		digitalWrite(RED_LED_PIN, 1);
 	}
 	else
 	{
 		// no blink
-		blink_speed = 0;
-	}
-
-	if (blink_speed)
-	{
-		// Sleep does not increment millis
-		if (previousMillisBlink > millis_while_sleeping)
-		{
-			previousMillisBlink -= millis_while_sleeping;
-		}
-		else
-		{
-			previousMillisBlink = 0;
-		}
-
-		if ((millis() - previousMillisBlink) > blink_speed)
-		{
-			digitalWrite(RED_LED_PIN, 1);
-
-			if ((millis() - previousMillisBlink)
-					> (blink_speed + BLINK_DURATION))
-			{
-				digitalWrite(RED_LED_PIN, 0);
-				previousMillisBlink = millis();
-			}
-		}
+		digitalWrite(RED_LED_PIN, 0);
 	}
 }
 #endif /* BATTERY_H_ */
