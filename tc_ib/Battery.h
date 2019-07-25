@@ -102,10 +102,6 @@ uint8_t batteryChargingStatus(uint32_t millis_while_sleeping)
 		{
 			previousMillisBattery -= BATTERY_READ_MS;
 		}
-		else
-		{
-			previousMillisBattery = 0;
-		}
 	}
 	else
 	{
