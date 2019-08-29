@@ -34,6 +34,10 @@
 #define GAP_WHEN_CHARGE		3
 #define BATTERY_READ_MS		1000
 
+#define BATTERY_LEVEL_90	636
+#define BATTERY_LEVEL_80	616
+#define BATTERY_LEVEL_60	601
+#define BATTERY_LEVEL_40	588
 #define BATTERY_LEVEL_20	575
 #define BATTERY_LEVEL_15	567
 #define BATTERY_LEVEL_10	559
@@ -43,6 +47,7 @@
 #define BLINK_DURATION		1000
 
 const uint8_t BATTERY_LEVEL = A2;
+const uint8_t CHARGING_STATUS_PIN = 1;
 
 uint32_t previousMillisBattery = 0;
 uint8_t isCharging = 0;
@@ -90,7 +95,7 @@ void batteryChargingStatusInit(void)
 	previousMillisBattery = BATTERY_READ_MS;
 }
 
-uint8_t batteryChargingStatus(uint32_t millis_while_sleeping)
+uint8_t batteryLevelStatus(uint32_t millis_while_sleeping)
 {
 	uint8_t changeDetected = 0;
 	int32_t delta = 0;
@@ -98,7 +103,7 @@ uint8_t batteryChargingStatus(uint32_t millis_while_sleeping)
 	// Sleep does not increment millis
 	if (previousMillisBattery > millis_while_sleeping)
 	{
-		if(millis_while_sleeping > BATTERY_READ_MS)
+		if (millis_while_sleeping > BATTERY_READ_MS)
 		{
 			previousMillisBattery -= BATTERY_READ_MS;
 		}
@@ -182,8 +187,7 @@ uint8_t batteryChargingStatus(uint32_t millis_while_sleeping)
 
 void batteryChargeNotify(void)
 {
-
-	if (batLevelAvg[NB_OF_AVG_VALUES - 1] < BATTERY_LEVEL_15)
+	if (batLevelAvg[NB_OF_AVG_VALUES - 1] <= BATTERY_LEVEL_20)
 	{
 		/* Notify*/
 		digitalWrite(RED_LED_PIN, 1);
@@ -194,4 +198,56 @@ void batteryChargeNotify(void)
 		digitalWrite(RED_LED_PIN, 0);
 	}
 }
+
+int batteryChargeDetection(void)
+{
+	uint8_t pin_value = digitalRead(CHARGING_STATUS_PIN);
+	uint8_t last_charging_status = isCharging;
+	uint8_t change_detected = 0;
+
+	isCharging = !pin_value;
+
+#ifdef DEBUG_SERIAL
+	//Serial.println("isCharging = " + String(isCharging));
+#endif
+
+	if (last_charging_status != isCharging)
+	{
+		change_detected = 1;
+	}
+
+	return change_detected;
+}
+
+void showBatteryLevel(void)
+{
+	color_t color1 = NO_COLOR;
+	color_t color2 = NO_COLOR;
+	color_t color3 = NO_COLOR;
+	color_t color4 = NO_COLOR;
+
+#ifdef DEBUG_SERIAL
+  Serial.println("batLevelAvg[NB_OF_AVG_VALUES - 1] = " + String(batLevelAvg[NB_OF_AVG_VALUES - 1]));
+#endif
+
+	if(batLevelAvg[NB_OF_AVG_VALUES - 1] > BATTERY_LEVEL_20)
+	{
+		color1 = COLOR_GREEN;
+	}
+	if(batLevelAvg[NB_OF_AVG_VALUES - 1] > BATTERY_LEVEL_40)
+	{
+		color2 = COLOR_GREEN;
+	}
+	if(batLevelAvg[NB_OF_AVG_VALUES - 1] > BATTERY_LEVEL_60)
+	{
+		color3 = COLOR_GREEN;
+	}
+	if(batLevelAvg[NB_OF_AVG_VALUES - 1] > BATTERY_LEVEL_80)
+	{
+		color4 = COLOR_GREEN;
+	}
+
+	doLedRingFourPixelsBlink(color1, color2, color3, color4, 200, 3);
+}
+
 #endif /* BATTERY_H_ */

@@ -23,7 +23,7 @@
  *******************************************************************************/
 
 // Debugging Purpose
-//#define DEBUG_SERIAL
+#define DEBUG_SERIAL
 #define SLEEP_MODE
 
 #include <Arduino.h>
@@ -51,7 +51,7 @@ boolean isChangeDetected = false;
 #include <Adafruit_NeoPixel.h>
 #include "LedRing.h"
 
-#define RED_LED_PIN		13
+#define RED_LED_PIN		A4 // LED TEST
 
 // Variables Etat
 color_t colorId = INITIAL_COLOR;
@@ -118,6 +118,9 @@ void setup()
 	pinMode(LED_BUTTON_MODE_PIN, INPUT_PULLUP);
 	pinMode(RED_LED_PIN, OUTPUT);
 	digitalWrite(RED_LED_PIN, 0);
+
+	/* Charge Status PIN */
+	pinMode(CHARGING_STATUS_PIN, INPUT_PULLUP);
 
 	// Init button state
 	initButtonState();
@@ -195,8 +198,9 @@ void loop()
 	}
 #endif
 
-	/* Battery check - provide millisSlept */
-	if (batteryChargingStatus(millisSlept))
+
+	/* Battery charge detection */
+	if (batteryChargeDetection())
 	{
 		// Action on change detected
 		if (!isCharging)
@@ -205,8 +209,12 @@ void loop()
 		}
 	}
 
+	/* Battery level check - provide millisSlept */
+	batteryLevelStatus(millisSlept);
+
 	/* Notify with RED_LED */
 	batteryChargeNotify();
+
 }
 
 /*****************************************************************************
@@ -314,7 +322,9 @@ void switch_mode(button_event_t bMode)
 		} /* Show */
 		else if (bMode == CLICK)
 		{
-			showGameFormsId(game_forms_id, 200, 3, 0);
+			//showGameFormsId(game_forms_id, 200, 3, 0);
+			/* Show battery level */
+			showBatteryLevel();
 		}
 	}
 
