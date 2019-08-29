@@ -23,7 +23,7 @@
  *******************************************************************************/
 
 // Debugging Purpose
-#define DEBUG_SERIAL
+#undef DEBUG_SERIAL
 #define SLEEP_MODE
 
 #include <Arduino.h>
