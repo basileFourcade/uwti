@@ -48,9 +48,11 @@
 
 const uint8_t BATTERY_LEVEL = A2;
 const uint8_t CHARGING_STATUS_PIN = 1;
+#define RED_LED_PIN			A4 // LED TEST
 
 uint32_t previousMillisBattery = 0;
 uint8_t isCharging = 0;
+uint8_t redLedPinState = 0;
 
 #define NB_OF_SAMPLES		4
 uint8_t batLevelLast_idx = 0;
@@ -68,7 +70,7 @@ uint32_t readBatteryLevel(void)
 	uint32_t sensor_value = analogRead(BATTERY_LEVEL);
 
 #ifdef DEBUG_SERIAL
-	Serial.println("battery = " + String(sensor_value));
+	//Serial.println("battery = " + String(sensor_value));
 #endif
 
 	return sensor_value;
@@ -77,6 +79,7 @@ uint32_t readBatteryLevel(void)
 void batteryChargingStatusInit(void)
 {
 	isCharging = 0;
+	redLedPinState = 0;
 
 	// Do first measure
 	batLevelLast_idx = 0;
@@ -127,7 +130,7 @@ uint8_t batteryLevelStatus(uint32_t millis_while_sleeping)
 		{
 			batLevelAvg[i] = batLevelAvg[i + 1];
 #ifdef DEBUG_SERIAL
-			Serial.println("batLevelAvg " + String(i) + " " + String(batLevelAvg[i]));
+			//Serial.println("batLevelAvg " + String(i) + " " + String(batLevelAvg[i]));
 #endif
 		}
 		/* compute a new one */
@@ -189,13 +192,25 @@ void batteryChargeNotify(void)
 {
 	if (batLevelAvg[NB_OF_AVG_VALUES - 1] <= BATTERY_LEVEL_20)
 	{
-		/* Notify*/
-		digitalWrite(RED_LED_PIN, 1);
+		if(!redLedPinState)
+		{
+			redLedPinState = 1;
+			digitalWrite(RED_LED_PIN, 1);
+#ifdef DEBUG_SERIAL
+			Serial.println("RED_LED_PIN ON with " + String(batLevelAvg[NB_OF_AVG_VALUES - 1]));
+#endif
+		}
 	}
 	else
 	{
-		// no blink
-		digitalWrite(RED_LED_PIN, 0);
+		if(redLedPinState)
+		{
+			redLedPinState = 0;
+			digitalWrite(RED_LED_PIN, 0);
+#ifdef DEBUG_SERIAL
+			Serial.println("RED_LED_PIN OFF with " + String(batLevelAvg[NB_OF_AVG_VALUES - 1]));
+#endif
+		}
 	}
 }
 
@@ -207,13 +222,12 @@ int batteryChargeDetection(void)
 
 	isCharging = !pin_value;
 
-#ifdef DEBUG_SERIAL
-	//Serial.println("isCharging = " + String(isCharging));
-#endif
-
 	if (last_charging_status != isCharging)
 	{
 		change_detected = 1;
+#ifdef DEBUG_SERIAL
+		Serial.println("isCharging = " + String(isCharging));
+#endif
 	}
 
 	return change_detected;

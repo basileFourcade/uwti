@@ -51,8 +51,6 @@ boolean isChangeDetected = false;
 #include <Adafruit_NeoPixel.h>
 #include "LedRing.h"
 
-#define RED_LED_PIN		A4 // LED TEST
-
 // Variables Etat
 color_t colorId = INITIAL_COLOR;
 color_t randomColorId = NO_COLOR;
@@ -145,6 +143,9 @@ void setup()
 #ifdef DEBUG_SERIAL
 	Serial.println(F("setup: End"));
 #endif
+
+	// Init sequence
+	test_sequence();
 
 }
 
@@ -530,4 +531,11 @@ void setup_init(void)
 	randomSeed(analogRead(PHOTO_RESIST));
 
 	reset_init();
+}
+
+void test_sequence(void)
+{
+	digitalWrite(RED_LED_PIN, 1);
+	doPixelRun(COLOR_GREEN, 300, 3);
+	digitalWrite(RED_LED_PIN, 0);
 }
