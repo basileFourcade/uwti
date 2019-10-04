@@ -22,6 +22,10 @@
  * SOFTWARE.
  *******************************************************************************/
 
+// Features/options
+#define FIXED_GAME_FORMS_ID
+#define GAME_FORMS_ID_VALUE		1	/* From 1 to 5 */
+
 // Debugging Purpose
 #undef DEBUG_SERIAL
 #define SLEEP_MODE
@@ -134,6 +138,11 @@ void setup()
 	uint8_t unused_2;
 	readNVMConfig((uint8_t *) &modeNVM, &game_forms_id, &unused_1,
 			(uint8_t *) &unused_2);
+
+#ifdef FIXED_GAME_FORMS_ID
+	/* Overwrite game_forms_id*/
+	game_forms_id = GAME_FORMS_ID_VALUE;
+#endif
 
 	setup_init();
 
@@ -500,6 +509,8 @@ void mode_config(button_event_t bMode)
 {
 	if (bMode == CLICK)
 	{
+#ifdef FIXED_GAME_FORMS_ID
+#else
 		/* Increase game_forms_id */
 		if (game_forms_id < 5)
 		{
@@ -509,7 +520,7 @@ void mode_config(button_event_t bMode)
 		{
 			game_forms_id = 1;
 		}
-
+#endif
 		/* Show game_forms_id */
 		showGameFormsId(game_forms_id, 0, 0, 0);
 	}

@@ -66,7 +66,7 @@ void resetNVMConfig(void)
 	EEPROM.write(NVM_CONTROL_OFF + 1, NVM_CONTROL_VALUE);
 
 	/* Configuration */
-	EEPROM.write(NVM_MODE_OFF, 1); /* default mode: MODE_1_SELECT_COLOR */
+	EEPROM.write(NVM_MODE_OFF, MODE_1_GAME); /* default mode: MODE_1_GAME */
 	EEPROM.write(NVM_GAME_FORMS_ID_OFF, 1); /* default id: 1 */
 	EEPROM.write(NVM_GAME_FORMS_LEVEL_OFF, 0); /* default level: DIFFICULTY_EASY */
 	EEPROM.write(NVM_COLOR_DEFAULT_OFF, 1); /* default color: COLOR_RED */
