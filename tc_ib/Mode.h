@@ -27,9 +27,10 @@
 /* Modes */
 typedef enum
 {
-	MODE_1_GAME = 0,
-	MODE_2A_GAME = 1,
-	NB_OF_MODE = 2,
-}mode_t;
+	MODE_1_GAME = 0,	//
+	MODE_2_GAME = 1,	//
+	MODE_3_GAME = 2,	//
+	NB_OF_MODE = 3,		//
+} mode_t;
 
 #endif // __MODE_H__

@@ -30,7 +30,7 @@ uint32_t previousMillisLastColor = 0;
 
 uint32_t previousMillisAlone = 0;
 #define LONG_ALONE_TIMEOUT_MS		5*60000
-#define VERY_LONG_ALONE_TIMEOUT_MS	10*60000
+#define VERY_LONG_ALONE_TIMEOUT_MS	30*60000
 
 boolean games_forms_update(color_t previous_color, color_t current_color, boolean ischangeDetected)
 {

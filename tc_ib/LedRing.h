@@ -121,7 +121,7 @@ void doLedRingOnePixelFade(uint8_t idx, color_t color, uint8_t intensity_max,
 }
 
 void doLedRingFourPixelsBlink(color_t color1, color_t color2, color_t color3,
-		color_t color4, uint8_t speed_ms, uint8_t loop)
+		color_t color4, uint16_t speed_ms, uint8_t loop)
 {
 	for (uint8_t i = 1; i <= loop; i++)
 	{
@@ -136,6 +136,7 @@ void doLedRingFourPixelsBlink(color_t color1, color_t color2, color_t color3,
 	}
 }
 
+/* TODO: both ways */
 void doPixelRun(color_t color, uint16_t speed_ms, uint8_t loop)
 {
 	uint8_t matrix[NUMBER_PIXELS][NUMBER_PIXELS] =
@@ -162,6 +163,7 @@ void doPixelRun(color_t color, uint16_t speed_ms, uint8_t loop)
 			VALUE_COLOR_MEDIUM);
 }
 
+#if 0
 void ledShow12bits(uint16_t value)
 {
 #ifdef DEBUG_SERIAL
@@ -180,5 +182,6 @@ void ledShow12bits(uint16_t value)
 
 	setLedringFourPixels(color1, color2, color3, color4, VALUE_COLOR_MEDIUM);
 }
+#endif
 
 #endif //__LED_RING__

@@ -48,11 +48,13 @@
 
 const uint8_t BATTERY_LEVEL = A2;
 const uint8_t CHARGING_STATUS_PIN = 1;
+#if 0
 #define RED_LED_PIN			A4 // LED TEST
+uint8_t redLedPinState = 0;
+#endif
 
 uint32_t previousMillisBattery = 0;
 uint8_t isCharging = 0;
-uint8_t redLedPinState = 0;
 
 #define NB_OF_SAMPLES		4
 uint8_t batLevelLast_idx = 0;
@@ -63,7 +65,7 @@ uint32_t batLevelLast[NB_OF_SAMPLES] =
 uint32_t batLevelAvg[NB_OF_AVG_VALUES] =
 { 0 };
 
-uint32_t previousMillisBlink = 0;
+uint32_t previousMillisPixelRun = 0;
 
 uint32_t readBatteryLevel(void)
 {
@@ -79,7 +81,9 @@ uint32_t readBatteryLevel(void)
 void batteryChargingStatusInit(void)
 {
 	isCharging = 0;
+#if 0
 	redLedPinState = 0;
+#endif
 
 	// Do first measure
 	batLevelLast_idx = 0;
@@ -188,28 +192,26 @@ uint8_t batteryLevelStatus(uint32_t millis_while_sleeping)
 	return changeDetected;
 }
 
+#define FREQUENCY_NOTIFICATION_LOW_BAT_10		30*1000
+#define FREQUENCY_NOTIFICATION_LOW_BAT_20		120*1000
 void batteryChargeNotify(void)
 {
-	if (batLevelAvg[NB_OF_AVG_VALUES - 1] <= BATTERY_LEVEL_20)
+	if (batLevelAvg[NB_OF_AVG_VALUES - 1] <= BATTERY_LEVEL_10)
 	{
-		if(!redLedPinState)
+		// doLedRun every 30 seconds
+		if (millis() - previousMillisPixelRun >= FREQUENCY_NOTIFICATION_LOW_BAT_10)
 		{
-			redLedPinState = 1;
-			digitalWrite(RED_LED_PIN, 1);
-#ifdef DEBUG_SERIAL
-			Serial.println("RED_LED_PIN ON with " + String(batLevelAvg[NB_OF_AVG_VALUES - 1]));
-#endif
+			previousMillisPixelRun = millis();
+			doPixelRun(COLOR_RED, 1000, 1);
 		}
 	}
-	else
+	else if (batLevelAvg[NB_OF_AVG_VALUES - 1] <= BATTERY_LEVEL_20)
 	{
-		if(redLedPinState)
+		// doLedRun every 120 seconds
+		if (millis() - previousMillisPixelRun >= FREQUENCY_NOTIFICATION_LOW_BAT_20)
 		{
-			redLedPinState = 0;
-			digitalWrite(RED_LED_PIN, 0);
-#ifdef DEBUG_SERIAL
-			Serial.println("RED_LED_PIN OFF with " + String(batLevelAvg[NB_OF_AVG_VALUES - 1]));
-#endif
+			previousMillisPixelRun = millis();
+			doPixelRun(COLOR_RED, 1000, 1);
 		}
 	}
 }
