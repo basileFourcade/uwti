@@ -65,7 +65,7 @@ button_event_t checkButton(uint8_t pin)
 
 	// Button pressed down
 	if (buttonVal[idx]
-			== LOW&& buttonLast[idx] == HIGH && (millis() - upTime[idx]) > DEBOUNCE)
+			== LOW && buttonLast[idx] == HIGH && (millis() - upTime[idx]) > DEBOUNCE)
 	{
 		downTime[idx] = millis();
 		ignoreUp[idx] = false;
