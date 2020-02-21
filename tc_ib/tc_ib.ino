@@ -98,6 +98,9 @@ boolean sleepModeRequired = false;
 boolean deepSleepNotificationDone = false;
 uint32_t millisSlept = 0;
 
+/* Pixel Art Duo */
+uint8_t firstNeighbor = 0;
+
 /*****************************************************************************
  * UTILS
  */
@@ -458,6 +461,7 @@ void idle_sleep_mode(boolean longIdle, boolean veryLongIdle,
 // MODE JEU DES FORMES - EASY - WITH IDLE SLEEP
 void game_forms_easy_with_idle_sleep(button_event_t buttonEventMode)
 {
+	(void) buttonEventMode;
 	uint8_t combinaison;
 	color_t previous_color = colorId;
 	uint8_t nb_of_neighbors = 0;
@@ -579,6 +583,84 @@ void game_forms_hard_with_idle_sleep(button_event_t buttonEventMode)
 
 		/* Now we can play */
 		colorId = getColorFromCombinaisonHard(combinaison, game_forms_id);
+
+		/* Update led ring */
+		isChangeDetected = games_forms_update(previous_color, colorId, isChangeDetected);
+	}
+}
+
+// MODE JEU DES FORMES - HARD - WITH IDLE SLEEP
+void pixel_art_duo_with_idle_sleep(button_event_t buttonEventMode)
+{
+	(void) buttonEventMode;
+	color_t previous_color = colorId;
+	uint8_t nb_of_neighbors = 0;
+	boolean goIdle = false;
+	boolean longIdle = false;
+	boolean veryLongIdle = false;
+
+	/* Refresh neighbors */
+	nb_of_neighbors = detectNeighbors(&isChangeDetected);
+
+	/* If we get one neighbors, set noNeighborsUntilNow to false */
+	if (nb_of_neighbors && noNeighborsUntilNow)
+	{
+		noNeighborsUntilNow = false;
+	}
+
+	/* Check if idle is required */
+	/* Activate Sleep mode longIdle without notifications */
+	/* Activate Sleep mode veryLongIdle with a Led run */
+	goIdle = games_forms_idle_check(nb_of_neighbors, isChangeDetected,
+			&longIdle, &veryLongIdle, &randomColorId);
+
+	if(noNeighborsUntilNow || (isCharging && (nb_of_neighbors == 0)))
+	{		/* At boot we do idle_sleep as long as no neighbors */
+		idle_sleep(randomColorId);
+	}
+	else if (goIdle)
+	{
+		if(veryLongIdle)
+		{
+			if(!deepSleepNotificationDone)
+			{
+				doPixelRun(COLOR_BLUE, 1000, 1);
+				deepSleepNotificationDone = true;
+			}
+			sleepModeRequired = true;
+		}
+		else if (longIdle)
+		{
+			sleepModeRequired = true;
+		}
+		else
+		{
+			/* Nothing */
+		}
+	}
+	else
+	{
+		/* Only the first Neighbors matters */
+		if(isChangeDetected )
+		{
+			/* If we come from 0 to 1 neighbors, then pick the color */
+			if((nb_of_neighbors == 1))
+			{
+				if(!firstNeighbor)
+				{
+					firstNeighbor = 0x0F
+							& ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1)
+									+ faces[3]);
+				}
+			}
+			else if (nb_of_neighbors == 0)
+			{	/* If we come back to 0 , reset the color */
+				firstNeighbor = 0;
+			}
+		}
+
+		/* Now we can play */
+		colorId = getColorFromPixelArt(firstNeighbor, game_forms_id);
 
 		/* Update led ring */
 		isChangeDetected = games_forms_update(previous_color, colorId, isChangeDetected);

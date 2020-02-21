@@ -647,4 +647,132 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 	return local_color;
 }
 
+color_t getColorFromPixelArt(uint8_t combinaison, uint8_t game_forms_id)
+{
+	color_t local_color = NO_COLOR;
+
+	if (game_forms_id == 1)
+	{
+		switch (combinaison)
+		{
+		case 0x00:
+		default:
+			local_color = NO_COLOR;
+			break;
+
+		case 0x08:	// NORD
+			local_color = COLOR_BLUE;
+			break;
+		case 0x04:	// EST
+			local_color = COLOR_WHITE;
+			break;
+		case 0x02:	// SUD
+			local_color = COLOR_RED;
+			break;
+		case 0x01:	// OUEST
+			local_color = COLOR_GREEN;
+			break;
+		}
+	}
+	else if (game_forms_id == 2)
+	{
+		switch (combinaison)
+		{
+		case 0x00:
+		default:
+			local_color = NO_COLOR;
+			break;
+
+		case 0x08:
+			local_color = COLOR_PURPLE;
+			break;
+		case 0x04:
+			local_color = COLOR_YELLOW;
+			break;
+		case 0x02:
+			local_color = COLOR_INDIGO;
+			break;
+		case 0x01:
+			local_color = COLOR_PINK;
+			break;
+		}
+	}
+	else if (game_forms_id == 3)
+	{
+		switch (combinaison)
+		{
+		case 0x00:
+		default:
+			local_color = NO_COLOR;
+			break;
+
+		case 0x08:
+			local_color = COLOR_ORANGE;
+			break;
+		case 0x04:
+			local_color = COLOR_WHITE;
+			break;
+		case 0x02:
+			local_color = COLOR_INDIGO;
+			break;
+		case 0x01:
+			local_color = COLOR_GREEN;
+			break;
+		}
+	}
+	else if (game_forms_id == 4)
+	{
+		switch (combinaison)
+		{
+		case 0x00:
+		default:
+			local_color = NO_COLOR;
+			break;
+
+		case 0x08:
+			local_color = COLOR_BLUE;
+			break;
+		case 0x04:
+			local_color = COLOR_YELLOW;
+			break;
+		case 0x02:
+			local_color = COLOR_RED;
+			break;
+		case 0x01:
+			local_color = COLOR_PINK;
+			break;
+		}
+	}
+	else if (game_forms_id == 5)
+	{
+		switch (combinaison)
+		{
+		case 0x00:
+		default:
+			local_color = NO_COLOR;
+			break;
+
+		case 0x08:
+			local_color = COLOR_PURPLE;
+			break;
+		case 0x04:
+			local_color = COLOR_YELLOW;
+			break;
+		case 0x02:
+			local_color = COLOR_INDIGO;
+			break;
+		case 0x01:
+			local_color = COLOR_ORANGE;
+			break;
+		}
+	}
+	else
+	{
+#ifdef DEBUG_SERIAL
+		Serial.println("Unknown game_forms_id!");
+#endif
+	}
+	return local_color;
+}
+
 #endif //__GAME_FORMS_H__
