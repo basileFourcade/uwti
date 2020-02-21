@@ -10,9 +10,8 @@
 #define __BUTTON_H__
 
 // Button
-#define NB_BUTTONS				2
+#define NB_BUTTONS				1
 #define LED_BUTTON_MODE_PIN		4
-#define LED_TOUCH_PANEL_PIN 	A5
 
 // Button timing variables
 #define DEBOUNCE		10 		// ms debounce period to prevent flickering when pressing or releasing the button
@@ -61,22 +60,12 @@ button_event_t checkButton(uint8_t pin)
 	button_event_t event = NO_EVENT;
 	uint8_t idx = 0;
 
-	// switch idx depending on pin
-	if (pin == LED_TOUCH_PANEL_PIN)
-	{
-		idx = 0;
-	}
-	else // LED_BUTTON_MODE_PIN
-	{
-		idx = 1;
-	}
-
 	// Read the state of the button
 	buttonVal[idx] = digitalRead(pin);
 
 	// Button pressed down
 	if (buttonVal[idx]
-			== LOW&& buttonLast[idx] == HIGH && (millis() - upTime[idx]) > DEBOUNCE)
+			== LOW && buttonLast[idx] == HIGH && (millis() - upTime[idx]) > DEBOUNCE)
 	{
 		downTime[idx] = millis();
 		ignoreUp[idx] = false;
@@ -153,16 +142,6 @@ button_event_t checkButtonStatus(uint8_t pin)
 	button_event_t event = NO_EVENT;
 	uint8_t idx = 0;
 
-	// switch idx depending on pin
-	if (pin == LED_TOUCH_PANEL_PIN)
-	{
-		idx = 0;
-	}
-	else // LED_BUTTON_MODE_PIN
-	{
-		idx = 1;
-	}
-
 	// Read the state of the button
 	buttonVal[idx] = digitalRead(pin);
 
@@ -175,19 +154,9 @@ button_event_t checkButtonStatus(uint8_t pin)
 	return event;
 }
 
-void initButtonState(uint8_t pin)
+void initButtonState(void)
 {
 	uint8_t idx = 0;
-
-	// switch idx depending on pin
-	if (pin == LED_TOUCH_PANEL_PIN)
-	{
-		idx = 0;
-	}
-	else // LED_BUTTON_MODE_PIN
-	{
-		idx = 1;
-	}
 
 	/* Reset all button variables */
 	buttonVal[idx] = HIGH;

@@ -46,10 +46,8 @@
 #define NVM_GAME_FORMS_LEVEL_SIZE	1
 #define NVM_COLOR_DEFAULT_OFF		NVM_GAME_FORMS_LEVEL_OFF + NVM_GAME_FORMS_LEVEL_SIZE
 #define NVM_COLOR_DEFAULT_SIZE		1
-#define NVM_CUSTOM_COMBI_OFF		NVM_COLOR_DEFAULT_OFF + NVM_COLOR_DEFAULT_SIZE
-#define NVM_CUSTOM_COMBI_SIZE		NUMBER_OF_COMBINAISONS
 
-#define NVM_TOTAL_SIZE				NVM_CUSTOM_COMBI_OFF + NVM_CUSTOM_COMBI_SIZE
+#define NVM_TOTAL_SIZE				NVM_COLOR_DEFAULT_OFF + NVM_COLOR_DEFAULT_SIZE
 
 void resetNVMConfig(void)
 {
@@ -68,18 +66,11 @@ void resetNVMConfig(void)
 	EEPROM.write(NVM_CONTROL_OFF + 1, NVM_CONTROL_VALUE);
 
 	/* Configuration */
-	EEPROM.write(NVM_MODE_OFF, 1); /* default mode: MODE_1_SELECT_COLOR */
+	EEPROM.write(NVM_MODE_OFF, MODE_1_GAME); /* default mode: MODE_1_GAME */
 	EEPROM.write(NVM_GAME_FORMS_ID_OFF, 1); /* default id: 1 */
 	EEPROM.write(NVM_GAME_FORMS_LEVEL_OFF, 0); /* default level: DIFFICULTY_EASY */
 	EEPROM.write(NVM_COLOR_DEFAULT_OFF, 1); /* default color: COLOR_RED */
 
-	/* Combi Custom*/
-	EEPROM.write(NVM_CUSTOM_COMBI_OFF + IDX_0_FACES, 0); /* default color: NO_COLOR */
-	EEPROM.write(NVM_CUSTOM_COMBI_OFF + IDX_1_FACES, 0); /* default color: NO_COLOR */
-	EEPROM.write(NVM_CUSTOM_COMBI_OFF + IDX_2_ADJ_FACES, 1); /* default color: COLOR_RED */
-	EEPROM.write(NVM_CUSTOM_COMBI_OFF + IDX_2_OP_FACES, 0); /* default color: NO_COLOR */
-	EEPROM.write(NVM_CUSTOM_COMBI_OFF + IDX_3_FACES, 0); /* default color: NO_COLOR */
-	EEPROM.write(NVM_CUSTOM_COMBI_OFF + IDX_4_FACES, 0); /* default color: NO_COLOR */
 }
 
 void checkNVMConfigData(void)
@@ -166,18 +157,6 @@ void readNVMConfig(uint8_t* mode, uint8_t* game_id, uint8_t* game_lvl,
 #endif
 }
 
-void readNVMCombinaisonCustomConfig(void)
-{
-	for (uint8_t i = 0; i < NUMBER_OF_COMBINAISONS; i++)
-	{
-		combinaisonCustom[i] = (color_t) EEPROM.read(NVM_CUSTOM_COMBI_OFF + i);
-
-#ifdef DEBUG_SERIAL
-		Serial.println("combinaisonCustom " + String(i) + " " + String(combinaisonCustom[i]));
-#endif
-	}
-}
-
 void writeNVMConfig(uint16_t address, uint8_t val)
 {
 	if (address < EEPROM.length())
@@ -190,17 +169,6 @@ void writeNVMConfig(uint16_t address, uint8_t val)
 		Serial.println("Out of bounds address");
 #endif
 	}
-}
-
-void writeNVMCombinaisonCustomConfig(void)
-{
-	for (uint8_t i = 0; i < NUMBER_OF_COMBINAISONS; i++)
-	{
-		EEPROM.write(NVM_CUSTOM_COMBI_OFF + i, combinaisonCustom[i]);
-	}
-#ifdef DEBUG_SERIAL
-	Serial.println("writeNVMCombinaisonCustomConfig done");
-#endif
 }
 
 #endif //__NVM_H__

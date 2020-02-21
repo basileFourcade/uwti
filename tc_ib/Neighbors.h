@@ -25,10 +25,10 @@
 #ifndef __NEIGHBORS_H__
 #define __NEIGHBORS_H__
 
-const uint8_t DETECTFACE1 = A4;
-const uint8_t DETECTFACE2 = A1;
-const uint8_t DETECTFACE3 = A0;
-const uint8_t DETECTFACE4 = A3;
+const uint8_t DETECTFACE1 = A0;
+const uint8_t DETECTFACE2 = 11;
+const uint8_t DETECTFACE3 = A3;
+const uint8_t DETECTFACE4 = A1;
 
 #define NB_FACES			4
 uint8_t faces[NB_FACES];

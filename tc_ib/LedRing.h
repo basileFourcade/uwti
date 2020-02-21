@@ -121,7 +121,7 @@ void doLedRingOnePixelFade(uint8_t idx, color_t color, uint8_t intensity_max,
 }
 
 void doLedRingFourPixelsBlink(color_t color1, color_t color2, color_t color3,
-		color_t color4, uint8_t speed_ms, uint8_t loop)
+		color_t color4, uint16_t speed_ms, uint8_t loop)
 {
 	for (uint8_t i = 1; i <= loop; i++)
 	{
@@ -136,6 +136,7 @@ void doLedRingFourPixelsBlink(color_t color1, color_t color2, color_t color3,
 	}
 }
 
+/* TODO: both ways */
 void doPixelRun(color_t color, uint16_t speed_ms, uint8_t loop)
 {
 	uint8_t matrix[NUMBER_PIXELS][NUMBER_PIXELS] =
@@ -161,5 +162,26 @@ void doPixelRun(color_t color, uint16_t speed_ms, uint8_t loop)
 	setLedringFourPixels(NO_COLOR, NO_COLOR, NO_COLOR, NO_COLOR,
 			VALUE_COLOR_MEDIUM);
 }
+
+#if 0
+void ledShow12bits(uint16_t value)
+{
+#ifdef DEBUG_SERIAL
+	Serial.println("value is " + String(value));
+#endif
+	// |||| ||| ||| ||| |||
+	color_t color1 = (color_t) (value	>> 9) & 0x0007;
+	color_t color2 = (color_t) (value	>> 6) & 0x0007;
+	color_t color3 = (color_t) (value	>> 3) & 0x0007;
+	color_t color4 = (color_t) (value) & 0x0007;
+
+	Serial.println("color1 is " + String(color1));
+	Serial.println("color2 is " + String(color2));
+	Serial.println("color3 is " + String(color3));
+	Serial.println("color4 is " + String(color4));
+
+	setLedringFourPixels(color1, color2, color3, color4, VALUE_COLOR_MEDIUM);
+}
+#endif
 
 #endif //__LED_RING__
