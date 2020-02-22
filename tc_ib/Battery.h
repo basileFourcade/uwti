@@ -207,7 +207,7 @@ void batteryChargeNotify(void)
 				>= FREQUENCY_NOTIFICATION_LOW_BAT_10)
 		{
 			previousMillisPixelRun = millis();
-			doPixelRun(COLOR_RED, 1000, 1);
+			doPixelRun(COLOR_RED, 1000, 1, PIXEL_RUN_CLOCKWISE);
 		}
 	}
 	else if (batLevelAvg[NB_OF_AVG_VALUES - 1] <= BATTERY_LEVEL_20)
@@ -217,7 +217,7 @@ void batteryChargeNotify(void)
 				>= FREQUENCY_NOTIFICATION_LOW_BAT_20)
 		{
 			previousMillisPixelRun = millis();
-			doPixelRun(COLOR_RED, 1000, 1);
+			doPixelRun(COLOR_RED, 1000, 1, PIXEL_RUN_CLOCKWISE);
 		}
 	}
 }

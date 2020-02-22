@@ -214,7 +214,7 @@ void loop()
 		if(deepSleepNotificationDone)
 		{
 			deepSleepNotificationDone = false;
-			doPixelRun(COLOR_BLUE, 1000, 1);
+			doPixelRun(COLOR_BLUE, 1000, 1, PIXEL_RUN_ANTI_CLOCKWISE);
 		}
 	}
 #endif
@@ -494,7 +494,7 @@ void game_forms_easy_with_idle_sleep(button_event_t buttonEventMode)
 		{
 			if (!deepSleepNotificationDone)
 			{
-				doPixelRun(COLOR_BLUE, 1000, 1);
+				doPixelRun(COLOR_BLUE, 1000, 1, PIXEL_RUN_CLOCKWISE);
 				deepSleepNotificationDone = true;
 			}
 			sleepModeRequired = true;
@@ -560,7 +560,7 @@ void game_forms_hard_with_idle_sleep(button_event_t buttonEventMode)
 		{
 			if(!deepSleepNotificationDone)
 			{
-				doPixelRun(COLOR_BLUE, 1000, 1);
+				doPixelRun(COLOR_BLUE, 1000, 1, PIXEL_RUN_CLOCKWISE);
 				deepSleepNotificationDone = true;
 			}
 			sleepModeRequired = true;
@@ -624,7 +624,7 @@ void pixel_art_duo_with_idle_sleep(button_event_t buttonEventMode)
 		{
 			if(!deepSleepNotificationDone)
 			{
-				doPixelRun(COLOR_BLUE, 1000, 1);
+				doPixelRun(COLOR_BLUE, 1000, 1, PIXEL_RUN_CLOCKWISE);
 				deepSleepNotificationDone = true;
 			}
 			sleepModeRequired = true;
@@ -710,7 +710,7 @@ void setup_init(void)
 void test_sequence(void)
 {
 	digitalWrite(RED_LED_PIN, 1);
-	doPixelRun(COLOR_GREEN, 300, 3);
+	doPixelRun(COLOR_GREEN, 300, 3, PIXEL_RUN_CLOCKWISE);
 	digitalWrite(RED_LED_PIN, 0);
 }
 #endif
