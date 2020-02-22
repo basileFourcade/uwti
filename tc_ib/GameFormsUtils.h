@@ -25,9 +25,6 @@
 #ifndef __GAME_FORMS_UTILS_H__
 #define __GAME_FORMS_UTILS_H__
 
-uint32_t previousMillisLastColor = 0;
-#define LAST_COLOR_TIMEOUT_MS		2000
-
 uint32_t previousMillisAlone = 0;
 #define LONG_ALONE_TIMEOUT_MS		5*60000
 #define VERY_LONG_ALONE_TIMEOUT_MS	30*60000
@@ -39,14 +36,16 @@ boolean games_forms_update(color_t previous_color, color_t current_color, boolea
 	/* Update color if necessary*/
 	if ((previous_color != current_color) || ischangeDetected)
 	{
+#ifdef COLOR_CHANGES_FIXED_FREQUENCY
+		/* Stack the new color */
+		changesColorRequested = true;
+		colorRequested = current_color;
+#else
 		/* Display new color*/
 		setLedringColor(current_color, VALUE_COLOR_MAX);
-		/* Update RGB Status */
-		colorToRGB(current_color, NULL, NULL, NULL, VALUE_COLOR_MAX);
 		/* Notify change */
 		changeDetected = true;
-		/* Trigger timer */
-		previousMillisLastColor = millis();
+#endif
 	}
 
 	return changeDetected;
