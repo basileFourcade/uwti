@@ -141,8 +141,12 @@ uint8_t batteryLevelStatus(uint32_t millis_while_sleeping)
 		batLevelAvg[NB_OF_AVG_VALUES - 1] = (batLevelLast[0] + batLevelLast[1]
 				+ batLevelLast[2] + batLevelLast[3]) >> 2;
 
+#ifdef TEST_IF_CHARGING
 		/* then compare the latest with the oldest */
 		delta = batLevelAvg[NB_OF_AVG_VALUES - 1] - batLevelAvg[0];
+#else
+		(void) delta;
+#endif
 
 #ifdef DEBUG_SERIAL
 		Serial.println("batLevelAvg[0] = " + String(batLevelAvg[0]) +
@@ -192,26 +196,28 @@ uint8_t batteryLevelStatus(uint32_t millis_while_sleeping)
 	return changeDetected;
 }
 
-#define FREQUENCY_NOTIFICATION_LOW_BAT_10		30*1000
-#define FREQUENCY_NOTIFICATION_LOW_BAT_20		120*1000
+#define FREQUENCY_NOTIFICATION_LOW_BAT_10		(uint32_t) 30*1000
+#define FREQUENCY_NOTIFICATION_LOW_BAT_20		(uint32_t) 120*1000
 void batteryChargeNotify(void)
 {
 	if (batLevelAvg[NB_OF_AVG_VALUES - 1] <= BATTERY_LEVEL_10)
 	{
 		// doLedRun every 30 seconds
-		if (millis() - previousMillisPixelRun >= FREQUENCY_NOTIFICATION_LOW_BAT_10)
+		if ((millis() - previousMillisPixelRun)
+				>= FREQUENCY_NOTIFICATION_LOW_BAT_10)
 		{
 			previousMillisPixelRun = millis();
-			doPixelRun(COLOR_RED, 1000, 1);
+			doPixelRun(COLOR_RED, 1000, 1, PIXEL_RUN_CLOCKWISE);
 		}
 	}
 	else if (batLevelAvg[NB_OF_AVG_VALUES - 1] <= BATTERY_LEVEL_20)
 	{
 		// doLedRun every 120 seconds
-		if (millis() - previousMillisPixelRun >= FREQUENCY_NOTIFICATION_LOW_BAT_20)
+		if ((millis() - previousMillisPixelRun)
+				>= FREQUENCY_NOTIFICATION_LOW_BAT_20)
 		{
 			previousMillisPixelRun = millis();
-			doPixelRun(COLOR_RED, 1000, 1);
+			doPixelRun(COLOR_RED, 1000, 1, PIXEL_RUN_CLOCKWISE);
 		}
 	}
 }

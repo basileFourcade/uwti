@@ -46,10 +46,17 @@ void initDetectNeighbors(void)
 	pinMode(DETECTFACE4, INPUT_PULLUP);
 }
 
-uint8_t detectNeighbors(boolean * isChangeDetected)
+/* Use to detect specific transition */
+static uint8_t last_nb_of_neighbors = 0;
+
+uint8_t detectNeighbors(boolean *isChangeDetected,
+		boolean *isFirstNeighborsDetected, boolean *isLastNeighborsLost,
+		boolean *noNeighborsUntilNow)
 {
 	uint8_t nb_of_neighbors = 0;
 	*isChangeDetected = false;
+	*isFirstNeighborsDetected = false;
+	*isLastNeighborsLost = false;
 
 	for (uint8_t i = 0; i < NB_FACES; i++)
 	{
@@ -71,6 +78,25 @@ uint8_t detectNeighbors(boolean * isChangeDetected)
 			faces[i] = 0;
 		}
 	}
+
+	/* Monitor switch from 0 to 1 neighbors */
+	if ((last_nb_of_neighbors == 0) && (nb_of_neighbors == 1))
+	{
+		*isFirstNeighborsDetected = true;
+	}
+	/* Monitor switch from 1 to 0 neighbors */
+	if ((last_nb_of_neighbors == 1) && (nb_of_neighbors == 0))
+	{
+		*isLastNeighborsLost = true;
+	}
+	/* Monitor the FIRST switch from 0 to 1 neighbors */
+	if (nb_of_neighbors && noNeighborsUntilNow)
+	{
+		*noNeighborsUntilNow = false;
+	}
+
+	/* Store it for next time*/
+	last_nb_of_neighbors = nb_of_neighbors;
 
 	return nb_of_neighbors;
 }

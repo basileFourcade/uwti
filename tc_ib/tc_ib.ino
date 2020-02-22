@@ -25,6 +25,7 @@
 // Features/options
 #undef FIXED_GAME_FORMS_ID
 //#define GAME_FORMS_ID_VALUE		1	/* From 1 to 5 */
+#define COLOR_CHANGES_FIXED_FREQUENCY
 
 // Debugging Purpose
 #undef DEBUG_SERIAL
@@ -46,6 +47,9 @@
 
 // Detection voisins
 boolean isChangeDetected = false;
+boolean isFirstNeighborsDetected = false;
+boolean isLastNeighborsLost = false;
+boolean noNeighborsUntilNow = true;
 #include "Neighbors.h"
 
 // Light Sensor
@@ -58,7 +62,6 @@ boolean isChangeDetected = false;
 // Variables Etat
 color_t colorId = INITIAL_COLOR;
 color_t randomColorId = NO_COLOR;
-uint8_t red, green, blue = 0;
 
 /* MODE_SLEEP */
 #define FADE_SPEED_MS   30
@@ -71,6 +74,14 @@ uint8_t max_brightness = VALUE_COLOR_MEDIUM;
 
 // All mode definitions
 #include "Mode.h"
+
+#ifdef COLOR_CHANGES_FIXED_FREQUENCY
+boolean changesColorRequested = true;
+boolean resetFrequency = false;
+color_t colorRequested = NO_COLOR;
+#define FREQUENCY_COLOR_CHANGES_MS			(uint32_t) 1000
+uint32_t previousMillisColorChanges = 0;
+#endif
 
 // Options game_forms
 #include "GameForms.h"
@@ -93,7 +104,7 @@ boolean modeConfig = false;
 /* Sleep Mode Management */
 #include "Battery.h"
 
-boolean noNeighborsUntilNow = true;
+
 boolean sleepModeRequired = false;
 boolean deepSleepNotificationDone = false;
 uint32_t millisSlept = 0;
@@ -179,7 +190,8 @@ void loop()
 	if (is_sleeping)
 	{
 		/* Check if neigbors or charging or button */
-		if (detectNeighbors(&isChangeDetected) || isCharging
+		if (detectNeighbors(&isChangeDetected, &isFirstNeighborsDetected,
+				&isLastNeighborsLost, &noNeighborsUntilNow) || isCharging
 				|| (checkButtonStatus(LED_BUTTON_MODE_PIN) != NO_EVENT))
 		{
 			/* If yes stop sleep mode */
@@ -214,11 +226,10 @@ void loop()
 		if(deepSleepNotificationDone)
 		{
 			deepSleepNotificationDone = false;
-			doPixelRun(COLOR_BLUE, 1000, 1);
+			doPixelRun(COLOR_BLUE, 1000, 1, PIXEL_RUN_ANTI_CLOCKWISE);
 		}
 	}
 #endif
-
 
 	/* Battery charge detection */
 	if (batteryChargeDetection())
@@ -249,7 +260,7 @@ void process_mode_game(mode_t mode, button_event_t buttonEventMode)
 	{
 	default:
 	case MODE_1_GAME:
-		// TODO
+		pixel_art_duo_with_idle_sleep(buttonEventMode);
 		break;
 
 	case MODE_2_GAME:
@@ -260,6 +271,21 @@ void process_mode_game(mode_t mode, button_event_t buttonEventMode)
 		game_forms_hard_with_idle_sleep(buttonEventMode);
 		break;
 	}
+
+#ifdef COLOR_CHANGES_FIXED_FREQUENCY
+	if ((millis() - previousMillisColorChanges >= FREQUENCY_COLOR_CHANGES_MS) || resetFrequency)
+	{
+		previousMillisColorChanges = millis();
+		resetFrequency = false;
+
+		if(changesColorRequested)
+		{
+			changesColorRequested = false;
+			/* Display new color*/
+			setLedringColor(colorRequested, VALUE_COLOR_MAX);
+		}
+	}
+#endif
 }
 
 void process_mode_config(mode_t mode, button_event_t buttonEventMode)
@@ -369,8 +395,6 @@ void switch_mode(button_event_t bMode)
 		init_mode(mode);
 		/* Display new color*/
 		setLedringColor(colorId, VALUE_COLOR_MAX);
-		/* Update RGB Status */
-		colorToRGB(colorId, &red, &green, &blue, VALUE_COLOR_MAX);
 		/* Notify change */
 		isChangeDetected = true;
 	}
@@ -470,13 +494,17 @@ void game_forms_easy_with_idle_sleep(button_event_t buttonEventMode)
 	boolean veryLongIdle = false;
 
 	/* Refresh neighbors */
-	nb_of_neighbors = detectNeighbors(&isChangeDetected);
+	nb_of_neighbors = detectNeighbors(&isChangeDetected,
+			&isFirstNeighborsDetected,
+			&isLastNeighborsLost,
+			&noNeighborsUntilNow);
 
-	/* If we get one neighbors, set noNeighborsUntilNow to false */
-	if (nb_of_neighbors && noNeighborsUntilNow)
+#ifdef COLOR_CHANGES_FIXED_FREQUENCY
+	if (isFirstNeighborsDetected || isLastNeighborsLost)
 	{
-		noNeighborsUntilNow = false;
+		resetFrequency = true;
 	}
+#endif
 
 	/* Check if idle is required */
 	/* Activate Sleep mode longIdle without notifications */
@@ -494,7 +522,7 @@ void game_forms_easy_with_idle_sleep(button_event_t buttonEventMode)
 		{
 			if (!deepSleepNotificationDone)
 			{
-				doPixelRun(COLOR_BLUE, 1000, 1);
+				doPixelRun(COLOR_BLUE, 1000, 1, PIXEL_RUN_CLOCKWISE);
 				deepSleepNotificationDone = true;
 			}
 			sleepModeRequired = true;
@@ -536,13 +564,17 @@ void game_forms_hard_with_idle_sleep(button_event_t buttonEventMode)
 	boolean veryLongIdle = false;
 
 	/* Refresh neighbors */
-	nb_of_neighbors = detectNeighbors(&isChangeDetected);
+	nb_of_neighbors = detectNeighbors(&isChangeDetected,
+			&isFirstNeighborsDetected,
+			&isLastNeighborsLost,
+			&noNeighborsUntilNow);
 
-	/* If we get one neighbors, set noNeighborsUntilNow to false */
-	if (nb_of_neighbors && noNeighborsUntilNow)
+#ifdef COLOR_CHANGES_FIXED_FREQUENCY
+	if (isFirstNeighborsDetected || isLastNeighborsLost)
 	{
-		noNeighborsUntilNow = false;
+		resetFrequency = true;
 	}
+#endif
 
 	/* Check if idle is required */
 	/* Activate Sleep mode longIdle without notifications */
@@ -560,7 +592,7 @@ void game_forms_hard_with_idle_sleep(button_event_t buttonEventMode)
 		{
 			if(!deepSleepNotificationDone)
 			{
-				doPixelRun(COLOR_BLUE, 1000, 1);
+				doPixelRun(COLOR_BLUE, 1000, 1, PIXEL_RUN_CLOCKWISE);
 				deepSleepNotificationDone = true;
 			}
 			sleepModeRequired = true;
@@ -600,13 +632,17 @@ void pixel_art_duo_with_idle_sleep(button_event_t buttonEventMode)
 	boolean veryLongIdle = false;
 
 	/* Refresh neighbors */
-	nb_of_neighbors = detectNeighbors(&isChangeDetected);
+	nb_of_neighbors = detectNeighbors(&isChangeDetected,
+			&isFirstNeighborsDetected,
+			&isLastNeighborsLost,
+			&noNeighborsUntilNow);
 
-	/* If we get one neighbors, set noNeighborsUntilNow to false */
-	if (nb_of_neighbors && noNeighborsUntilNow)
+#ifdef COLOR_CHANGES_FIXED_FREQUENCY
+	if (isFirstNeighborsDetected || isLastNeighborsLost)
 	{
-		noNeighborsUntilNow = false;
+		resetFrequency = true;
 	}
+#endif
 
 	/* Check if idle is required */
 	/* Activate Sleep mode longIdle without notifications */
@@ -624,7 +660,7 @@ void pixel_art_duo_with_idle_sleep(button_event_t buttonEventMode)
 		{
 			if(!deepSleepNotificationDone)
 			{
-				doPixelRun(COLOR_BLUE, 1000, 1);
+				doPixelRun(COLOR_BLUE, 1000, 1, PIXEL_RUN_CLOCKWISE);
 				deepSleepNotificationDone = true;
 			}
 			sleepModeRequired = true;
@@ -710,7 +746,7 @@ void setup_init(void)
 void test_sequence(void)
 {
 	digitalWrite(RED_LED_PIN, 1);
-	doPixelRun(COLOR_GREEN, 300, 3);
+	doPixelRun(COLOR_GREEN, 300, 3, PIXEL_RUN_CLOCKWISE);
 	digitalWrite(RED_LED_PIN, 0);
 }
 #endif

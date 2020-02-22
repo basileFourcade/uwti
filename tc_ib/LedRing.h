@@ -136,15 +136,27 @@ void doLedRingFourPixelsBlink(color_t color1, color_t color2, color_t color3,
 	}
 }
 
-/* TODO: both ways */
-void doPixelRun(color_t color, uint16_t speed_ms, uint8_t loop)
+#define PIXEL_RUN_CLOCKWISE			0x01
+#define PIXEL_RUN_ANTI_CLOCKWISE	0x00
+void doPixelRun(color_t color, uint16_t speed_ms, uint8_t loop, uint8_t clockwise)
 {
 	uint8_t matrix[NUMBER_PIXELS][NUMBER_PIXELS] =
 	{
-	{ 0, 0, 0, 1 },
-	{ 1, 0, 0, 0 },
-	{ 0, 1, 0, 0 },
-	{ 0, 0, 1, 0 } };
+	{ 0, 0, 0, 1 },  	// Always the same
+	{ 0, 0, 0, 0 },	 	// We only need to choose { 1, 0, 0, 0 } or { 0, 0, 1, 0 }
+	{ 0, 1, 0, 0 },  	// Always the same
+	{ 0, 0, 0, 0 } }; 	// We only need to choose { 0, 0, 1, 0 } or { 1, 0, 0, 0 }
+
+	if (clockwise == PIXEL_RUN_CLOCKWISE)
+	{
+		matrix[1][0] = 1;
+		matrix[3][2] = 1;
+	}
+	else
+	{
+		matrix[1][2] = 1;
+		matrix[3][0] = 1;
+	}
 
 	for (uint8_t i = 0; i < loop; i++)
 	{

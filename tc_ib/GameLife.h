@@ -507,7 +507,7 @@ void life_processNormalCell(uint8_t nb_voisins)
 			Serial.println("MODE_DEFAULT:LOCK_TIMEOUT");
 #endif
 			/* Notify it */
-			doLedRingBlink(COLOR_GREEN, 200, 3);
+			doLedRingBlink(COLOR_GREEN, 200, 3, PIXEL_RUN_CLOCKWISE);
 		}
 		else
 		{
