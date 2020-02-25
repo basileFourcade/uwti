@@ -37,7 +37,8 @@ enum color_t
 	COLOR_WHITE = 7,
 	COLOR_ORANGE = 8,
 	COLOR_PINK = 9,
-	NB_OF_COLOR = 10
+	COLOR_DARK_GREEN = 10,
+	NB_OF_COLOR = 11
 };
 
 void colorToRGB(color_t color, uint8_t* red, uint8_t* green, uint8_t* blue,
@@ -108,8 +109,14 @@ void colorToRGB(color_t color, uint8_t* red, uint8_t* green, uint8_t* blue,
 
 	case COLOR_PINK:
 		*red = intensity;
-		*green = intensity / 2;
-		*blue = intensity / 2;
+		*green = intensity / 3;
+		*blue = intensity / 3;
+		break;
+
+	case COLOR_DARK_GREEN:
+		*red = intensity;
+		*green = intensity / 3;
+		*blue = intensity / 3;
 		break;
 	}
 }
