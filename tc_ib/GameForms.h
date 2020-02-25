@@ -526,6 +526,7 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x00:
 			local_color = NO_COLOR;
 			break;
+
 		case 0x08:
 			local_color = COLOR_RED;
 			break;
@@ -563,9 +564,10 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 		switch (combinaison)
 		{
 		case 0x00:
+		case 0x08:
 			local_color = NO_COLOR;
 			break;
-		case 0x08:
+
 		case 0x04:
 			local_color = COLOR_BLUE;
 			break;
@@ -693,7 +695,7 @@ color_t getColorFromPixelArt(uint8_t combinaison, uint8_t game_forms_id)
 			local_color = COLOR_INDIGO;
 			break;
 		case 0x01:
-			local_color = COLOR_PINK;
+			local_color = COLOR_DARK_GREEN;
 			break;
 		}
 	}
@@ -739,7 +741,7 @@ color_t getColorFromPixelArt(uint8_t combinaison, uint8_t game_forms_id)
 			local_color = COLOR_RED;
 			break;
 		case 0x01:
-			local_color = COLOR_PINK;
+			local_color = COLOR_DARK_GREEN;
 			break;
 		}
 	}
