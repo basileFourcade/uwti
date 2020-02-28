@@ -25,7 +25,7 @@
 // Features/options
 #undef FIXED_GAME_FORMS_ID
 //#define GAME_FORMS_ID_VALUE		1	/* From 1 to 5 */
-#define COLOR_CHANGES_FIXED_FREQUENCY
+#undef COLOR_CHANGES_FIXED_FREQUENCY
 
 // Debugging Purpose
 #undef DEBUG_SERIAL
@@ -106,6 +106,7 @@ boolean modeConfig = false;
 
 
 boolean sleepModeRequired = false;
+boolean deepSleep = false;
 boolean deepSleepNotificationDone = false;
 uint32_t millisSlept = 0;
 
@@ -216,7 +217,7 @@ void loop()
 
 #ifdef SLEEP_MODE
 	// Check if sleep is required
-	if (go_to_sleep(sleepModeRequired, &millisSlept))
+	if (go_to_sleep(sleepModeRequired, &millisSlept, deepSleep))
 	{
 		/* Just wake up, reset a few things */
 		reset_init();
@@ -301,7 +302,7 @@ void process_mode_config(mode_t mode, button_event_t buttonEventMode)
 	}
 }
 
-#define BLINK_SWITCH_MODE_MS		1000
+#define BLINK_SWITCH_MODE_MS		500
 void blink_when_switch_mode(uint8_t mode)
 {
 	// Specific blink
@@ -495,8 +496,7 @@ void game_forms_easy_with_idle_sleep(button_event_t buttonEventMode)
 
 	/* Refresh neighbors */
 	nb_of_neighbors = detectNeighbors(&isChangeDetected,
-			&isFirstNeighborsDetected,
-			&isLastNeighborsLost,
+			&isFirstNeighborsDetected, &isLastNeighborsLost,
 			&noNeighborsUntilNow);
 
 #ifdef COLOR_CHANGES_FIXED_FREQUENCY
@@ -526,10 +526,12 @@ void game_forms_easy_with_idle_sleep(button_event_t buttonEventMode)
 				deepSleepNotificationDone = true;
 			}
 			sleepModeRequired = true;
+			deepSleep = true;
 		}
 		else if (longIdle)
 		{
 			sleepModeRequired = true;
+			deepSleep = false;
 		}
 		else
 		{
@@ -565,8 +567,7 @@ void game_forms_hard_with_idle_sleep(button_event_t buttonEventMode)
 
 	/* Refresh neighbors */
 	nb_of_neighbors = detectNeighbors(&isChangeDetected,
-			&isFirstNeighborsDetected,
-			&isLastNeighborsLost,
+			&isFirstNeighborsDetected, &isLastNeighborsLost,
 			&noNeighborsUntilNow);
 
 #ifdef COLOR_CHANGES_FIXED_FREQUENCY
@@ -582,24 +583,26 @@ void game_forms_hard_with_idle_sleep(button_event_t buttonEventMode)
 	goIdle = games_forms_idle_check(nb_of_neighbors, isChangeDetected,
 			&longIdle, &veryLongIdle, &randomColorId);
 
-	if(noNeighborsUntilNow || (isCharging && (nb_of_neighbors == 0)))
-	{		/* At boot we do idle_sleep as long as no neighbors */
+	if (noNeighborsUntilNow || (isCharging && (nb_of_neighbors == 0)))
+	{ /* At boot we do idle_sleep as long as no neighbors */
 		idle_sleep(randomColorId);
 	}
 	else if (goIdle)
 	{
-		if(veryLongIdle)
+		if (veryLongIdle)
 		{
-			if(!deepSleepNotificationDone)
+			if (!deepSleepNotificationDone)
 			{
 				doPixelRun(COLOR_BLUE, 1000, 1, PIXEL_RUN_CLOCKWISE);
 				deepSleepNotificationDone = true;
 			}
 			sleepModeRequired = true;
+			deepSleep = true;
 		}
 		else if (longIdle)
 		{
 			sleepModeRequired = true;
+			deepSleep = false;
 		}
 		else
 		{
@@ -617,7 +620,8 @@ void game_forms_hard_with_idle_sleep(button_event_t buttonEventMode)
 		colorId = getColorFromCombinaisonHard(combinaison, game_forms_id);
 
 		/* Update led ring */
-		isChangeDetected = games_forms_update(previous_color, colorId, isChangeDetected);
+		isChangeDetected = games_forms_update(previous_color, colorId,
+				isChangeDetected);
 	}
 }
 
@@ -633,8 +637,7 @@ void pixel_art_duo_with_idle_sleep(button_event_t buttonEventMode)
 
 	/* Refresh neighbors */
 	nb_of_neighbors = detectNeighbors(&isChangeDetected,
-			&isFirstNeighborsDetected,
-			&isLastNeighborsLost,
+			&isFirstNeighborsDetected, &isLastNeighborsLost,
 			&noNeighborsUntilNow);
 
 #ifdef COLOR_CHANGES_FIXED_FREQUENCY
@@ -650,24 +653,26 @@ void pixel_art_duo_with_idle_sleep(button_event_t buttonEventMode)
 	goIdle = games_forms_idle_check(nb_of_neighbors, isChangeDetected,
 			&longIdle, &veryLongIdle, &randomColorId);
 
-	if(noNeighborsUntilNow || (isCharging && (nb_of_neighbors == 0)))
-	{		/* At boot we do idle_sleep as long as no neighbors */
+	if (noNeighborsUntilNow || (isCharging && (nb_of_neighbors == 0)))
+	{ /* At boot we do idle_sleep as long as no neighbors */
 		idle_sleep(randomColorId);
 	}
 	else if (goIdle)
 	{
-		if(veryLongIdle)
+		if (veryLongIdle)
 		{
-			if(!deepSleepNotificationDone)
+			if (!deepSleepNotificationDone)
 			{
 				doPixelRun(COLOR_BLUE, 1000, 1, PIXEL_RUN_CLOCKWISE);
 				deepSleepNotificationDone = true;
 			}
 			sleepModeRequired = true;
+			deepSleep = true;
 		}
 		else if (longIdle)
 		{
 			sleepModeRequired = true;
+			deepSleep = false;
 		}
 		else
 		{
@@ -677,20 +682,20 @@ void pixel_art_duo_with_idle_sleep(button_event_t buttonEventMode)
 	else
 	{
 		/* Only the first Neighbors matters */
-		if(isChangeDetected )
+		if (isChangeDetected)
 		{
 			/* If we come from 0 to 1 neighbors, then pick the color */
-			if((nb_of_neighbors == 1))
+			if ((nb_of_neighbors == 1))
 			{
-				if(!firstNeighbor)
+				if (!firstNeighbor)
 				{
 					firstNeighbor = 0x0F
-							& ((faces[0] << 3) + (faces[1] << 2) + (faces[2] << 1)
-									+ faces[3]);
+							& ((faces[0] << 3) + (faces[1] << 2)
+									+ (faces[2] << 1) + faces[3]);
 				}
 			}
 			else if (nb_of_neighbors == 0)
-			{	/* If we come back to 0 , reset the color */
+			{ /* If we come back to 0 , reset the color */
 				firstNeighbor = 0;
 			}
 		}
@@ -699,7 +704,8 @@ void pixel_art_duo_with_idle_sleep(button_event_t buttonEventMode)
 		colorId = getColorFromPixelArt(firstNeighbor, game_forms_id);
 
 		/* Update led ring */
-		isChangeDetected = games_forms_update(previous_color, colorId, isChangeDetected);
+		isChangeDetected = games_forms_update(previous_color, colorId,
+				isChangeDetected);
 	}
 }
 

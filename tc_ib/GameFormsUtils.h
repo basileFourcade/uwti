@@ -25,9 +25,11 @@
 #ifndef __GAME_FORMS_UTILS_H__
 #define __GAME_FORMS_UTILS_H__
 
+#define LONG_ALONE_TIMEOUT_S			(5*60)
+#define VERY_LONG_ALONE_TIMEOUT_S  		(30*60)
+
 uint32_t previousMillisAlone = 0;
-#define LONG_ALONE_TIMEOUT_MS		5*60000
-#define VERY_LONG_ALONE_TIMEOUT_MS	30*60000
+uint32_t previousSecondsAlone = 0;
 
 boolean games_forms_update(color_t previous_color, color_t current_color, boolean ischangeDetected)
 {
@@ -54,6 +56,7 @@ boolean games_forms_update(color_t previous_color, color_t current_color, boolea
 void game_forms_reset_idle(void)
 {
 	/* Arm timer */
+	previousSecondsAlone = 0;
 	previousMillisAlone = millis();
 }
 
@@ -76,13 +79,19 @@ boolean games_forms_idle_check(uint8_t nb_of_neighbors, boolean changeDetected,
 	/* If still 0 neighbors */
 	if (nb_of_neighbors == 0)
 	{
-		if ((millis() - previousMillisAlone >= LONG_ALONE_TIMEOUT_MS))
+		if ((millis() - previousMillisAlone >= 1000))
+		{
+			previousMillisAlone = millis();
+			previousSecondsAlone++;
+		}
+
+		if (previousSecondsAlone >= LONG_ALONE_TIMEOUT_S)
 		{
 			goIdle = true;
 
 			*longTimeoutReached = true;
 
-			if (millis() - previousMillisAlone >= VERY_LONG_ALONE_TIMEOUT_MS)
+			if (previousSecondsAlone >= VERY_LONG_ALONE_TIMEOUT_S)
 			{
 				*veryLongTimeoutReached = true;
 			}
