@@ -83,14 +83,19 @@ boolean games_forms_idle_check(uint8_t nb_of_neighbors, boolean changeDetected,
 		{
 			previousMillisAlone = millis();
 			previousSecondsAlone++;
+#ifdef DEBUG_SERIAL
+			Serial.println(" previousSecondsAlone " + String(previousSecondsAlone));
+#endif
 		}
 
 		if (previousSecondsAlone >= LONG_ALONE_TIMEOUT_S)
 		{
 			goIdle = true;
-#ifdef DEEP_SLEEP_WORK
 			*longTimeoutReached = true;
-
+#ifdef DEBUG_SERIAL
+			Serial.println("goIdle & longTimeoutReached");
+#endif
+#ifdef DEEP_SLEEP_WORK
 			if (previousSecondsAlone >= VERY_LONG_ALONE_TIMEOUT_S)
 			{
 				*veryLongTimeoutReached = true;
