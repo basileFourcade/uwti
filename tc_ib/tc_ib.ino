@@ -106,6 +106,7 @@ boolean modeConfig = false;
 
 
 boolean sleepModeRequired = false;
+boolean deepSleep = false;
 boolean deepSleepNotificationDone = false;
 uint32_t millisSlept = 0;
 
@@ -216,7 +217,7 @@ void loop()
 
 #ifdef SLEEP_MODE
 	// Check if sleep is required
-	if (go_to_sleep(sleepModeRequired, &millisSlept))
+	if (go_to_sleep(sleepModeRequired, &millisSlept, deepSleep))
 	{
 		/* Just wake up, reset a few things */
 		reset_init();
@@ -526,10 +527,12 @@ void game_forms_easy_with_idle_sleep(button_event_t buttonEventMode)
 				deepSleepNotificationDone = true;
 			}
 			sleepModeRequired = true;
+			deepSleep = true;
 		}
 		else if (longIdle)
 		{
 			sleepModeRequired = true;
+			deepSleep = false;
 		}
 		else
 		{
@@ -596,10 +599,12 @@ void game_forms_hard_with_idle_sleep(button_event_t buttonEventMode)
 				deepSleepNotificationDone = true;
 			}
 			sleepModeRequired = true;
+			deepSleep = true;
 		}
 		else if (longIdle)
 		{
 			sleepModeRequired = true;
+			deepSleep = false;
 		}
 		else
 		{
@@ -664,10 +669,12 @@ void pixel_art_duo_with_idle_sleep(button_event_t buttonEventMode)
 				deepSleepNotificationDone = true;
 			}
 			sleepModeRequired = true;
+			deepSleep = true;
 		}
 		else if (longIdle)
 		{
 			sleepModeRequired = true;
+			deepSleep = false;
 		}
 		else
 		{

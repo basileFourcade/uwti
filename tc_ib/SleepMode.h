@@ -26,6 +26,7 @@
 
 #include <Adafruit_SleepyDog.h>
 #define SLEEPING_TIME			4000
+#define DEEP_SLEEPING_TIME		8000
 
 #undef SLEEP_NOTIFIY_TEST
 
@@ -36,7 +37,7 @@
 
 boolean is_sleeping = false;
 
-boolean go_to_sleep(boolean goToSleep, uint32_t* millisSlept)
+boolean go_to_sleep(boolean goToSleep, uint32_t* millisSlept, boolean deepSleep)
 {
 	boolean justWakingUp = false;
 	*millisSlept = 0;
@@ -58,7 +59,14 @@ boolean go_to_sleep(boolean goToSleep, uint32_t* millisSlept)
 		else
 		{
 			/* Keep sleeping */
-			*millisSlept = Watchdog.sleep(SLEEPING_TIME);
+			if (deepSleep)
+			{
+				*millisSlept = Watchdog.sleep(DEEP_SLEEPING_TIME);
+			}
+			else
+			{
+				*millisSlept = Watchdog.sleep(SLEEPING_TIME);
+			}
 		}
 	}
 	else
