@@ -25,7 +25,7 @@
 // Features/options
 #undef FIXED_GAME_FORMS_ID
 //#define GAME_FORMS_ID_VALUE		1	/* From 1 to 5 */
-#define COLOR_CHANGES_FIXED_FREQUENCY
+#undef COLOR_CHANGES_FIXED_FREQUENCY
 
 // Debugging Purpose
 #undef DEBUG_SERIAL
@@ -301,7 +301,7 @@ void process_mode_config(mode_t mode, button_event_t buttonEventMode)
 	}
 }
 
-#define BLINK_SWITCH_MODE_MS		1000
+#define BLINK_SWITCH_MODE_MS		500
 void blink_when_switch_mode(uint8_t mode)
 {
 	// Specific blink
