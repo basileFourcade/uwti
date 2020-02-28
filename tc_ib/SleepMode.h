@@ -28,12 +28,7 @@
 #define SLEEPING_TIME			4000
 #define DEEP_SLEEPING_TIME		8000
 
-#undef SLEEP_NOTIFIY_TEST
-
-#ifdef SLEEP_NOTIFIY_TEST
-#define SLEEP_IN_ID_COLOR		(color_t) COLOR_ORANGE
-#define SLEEP_OUT_ID_COLOR		(color_t) COLOR_ORANGE
-#endif
+#define SLEEP_NOTIFIY_TEST
 
 boolean is_sleeping = false;
 
@@ -52,7 +47,7 @@ boolean go_to_sleep(boolean goToSleep, uint32_t* millisSlept, boolean deepSleep)
 
 #ifdef SLEEP_NOTIFIY_TEST
 			/* Notify */
-			doLedRingBlink(SLEEP_OUT_ID_COLOR, 200, 3);
+			doPixelRun(COLOR_BLUE, 1000, 1, PIXEL_RUN_ANTI_CLOCKWISE);
 #endif
 			justWakingUp = true;
 		}
@@ -77,13 +72,20 @@ boolean go_to_sleep(boolean goToSleep, uint32_t* millisSlept, boolean deepSleep)
 			/* Notify */
 #ifdef SLEEP_NOTIFIY_TEST
 			/* Implicit shut down LEDS */
-			doLedRingBlink(SLEEP_IN_ID_COLOR, 200, 3);
+			doPixelRun(COLOR_BLUE, 1000, 1, PIXEL_RUN_CLOCKWISE);
 #else
 			/* Explicitely shut down LEDS */
 			setLedringColor(NO_COLOR, 0);
 #endif
 			/* Now sleep */
-			*millisSlept = Watchdog.sleep(SLEEPING_TIME);
+			if (deepSleep)
+			{
+				*millisSlept = Watchdog.sleep(DEEP_SLEEPING_TIME);
+			}
+			else
+			{
+				*millisSlept = Watchdog.sleep(SLEEPING_TIME);
+			}
 		}
 	}
 

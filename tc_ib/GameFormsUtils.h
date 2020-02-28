@@ -25,7 +25,7 @@
 #ifndef __GAME_FORMS_UTILS_H__
 #define __GAME_FORMS_UTILS_H__
 
-#define LONG_ALONE_TIMEOUT_S			(5*60)
+#define LONG_ALONE_TIMEOUT_S			(15*60)
 #define VERY_LONG_ALONE_TIMEOUT_S  		(30*60)
 
 uint32_t previousMillisAlone = 0;
@@ -88,13 +88,14 @@ boolean games_forms_idle_check(uint8_t nb_of_neighbors, boolean changeDetected,
 		if (previousSecondsAlone >= LONG_ALONE_TIMEOUT_S)
 		{
 			goIdle = true;
-
+#ifdef DEEP_SLEEP_WORK
 			*longTimeoutReached = true;
 
 			if (previousSecondsAlone >= VERY_LONG_ALONE_TIMEOUT_S)
 			{
 				*veryLongTimeoutReached = true;
 			}
+#endif
 		}
 	}
 

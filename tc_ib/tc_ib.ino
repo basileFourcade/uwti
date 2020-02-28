@@ -26,6 +26,7 @@
 #undef FIXED_GAME_FORMS_ID
 //#define GAME_FORMS_ID_VALUE		1	/* From 1 to 5 */
 #undef COLOR_CHANGES_FIXED_FREQUENCY
+#define DEEP_SLEEP_DONT_WORK
 
 // Debugging Purpose
 #undef DEBUG_SERIAL
@@ -106,8 +107,11 @@ boolean modeConfig = false;
 
 
 boolean sleepModeRequired = false;
+/* the value is ised to choose between SLEEPING_TIME and DEEP_SLEEPING_TIME */
 boolean deepSleep = false;
+#ifdef DEEP_SLEEP_WORK
 boolean deepSleepNotificationDone = false;
+#endif
 uint32_t millisSlept = 0;
 
 /* Pixel Art Duo */
@@ -223,12 +227,13 @@ void loop()
 		reset_init();
 		/* Reset Idle timers */
 		game_forms_reset_idle();
-
+#ifdef DEEP_SLEEP_WORK
 		if(deepSleepNotificationDone)
 		{
 			deepSleepNotificationDone = false;
 			doPixelRun(COLOR_BLUE, 1000, 1, PIXEL_RUN_ANTI_CLOCKWISE);
 		}
+#endif
 	}
 #endif
 
@@ -518,6 +523,7 @@ void game_forms_easy_with_idle_sleep(button_event_t buttonEventMode)
 	}
 	else if (goIdle)
 	{
+#ifdef DEEP_SLEEP_WORK
 		if (veryLongIdle)
 		{
 			if (!deepSleepNotificationDone)
@@ -528,10 +534,12 @@ void game_forms_easy_with_idle_sleep(button_event_t buttonEventMode)
 			sleepModeRequired = true;
 			deepSleep = true;
 		}
-		else if (longIdle)
+		else
+#endif
+		if (longIdle)
 		{
 			sleepModeRequired = true;
-			deepSleep = false;
+			deepSleep = true;
 		}
 		else
 		{
@@ -589,6 +597,7 @@ void game_forms_hard_with_idle_sleep(button_event_t buttonEventMode)
 	}
 	else if (goIdle)
 	{
+#ifdef DEEP_SLEEP_WORK
 		if (veryLongIdle)
 		{
 			if (!deepSleepNotificationDone)
@@ -599,10 +608,12 @@ void game_forms_hard_with_idle_sleep(button_event_t buttonEventMode)
 			sleepModeRequired = true;
 			deepSleep = true;
 		}
-		else if (longIdle)
+		else
+#endif
+		if (longIdle)
 		{
 			sleepModeRequired = true;
-			deepSleep = false;
+			deepSleep = true;
 		}
 		else
 		{
@@ -659,6 +670,7 @@ void pixel_art_duo_with_idle_sleep(button_event_t buttonEventMode)
 	}
 	else if (goIdle)
 	{
+#ifdef DEEP_SLEEP_WORK
 		if (veryLongIdle)
 		{
 			if (!deepSleepNotificationDone)
@@ -669,10 +681,12 @@ void pixel_art_duo_with_idle_sleep(button_event_t buttonEventMode)
 			sleepModeRequired = true;
 			deepSleep = true;
 		}
-		else if (longIdle)
+		else
+#endif
+		if (longIdle)
 		{
 			sleepModeRequired = true;
-			deepSleep = false;
+			deepSleep = true;
 		}
 		else
 		{
@@ -732,6 +746,8 @@ void mode_config(button_event_t bMode)
 
 void reset_init(void)
 {
+	colorId = NO_COLOR;
+
 	/* Pick up a random color */
 	randomColorId = (color_t) random(NO_COLOR + 1, NB_OF_COLOR);
 
