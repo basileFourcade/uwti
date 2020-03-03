@@ -243,7 +243,8 @@ void loop()
 		// Action on change detected
 		if (!isCharging)
 		{
-			setLedringColor(NO_COLOR, 0);
+			// Charge is over
+			setLedringColor(randomColorId, VALUE_COLOR_MEDIUM);
 		}
 	}
 

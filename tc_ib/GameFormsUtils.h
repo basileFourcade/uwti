@@ -44,7 +44,7 @@ boolean games_forms_update(color_t previous_color, color_t current_color, boolea
 		colorRequested = current_color;
 #else
 		/* Display new color*/
-		setLedringColor(current_color, VALUE_COLOR_MAX);
+		setLedringColor(current_color, VALUE_COLOR_MEDIUM);
 		/* Notify change */
 		changeDetected = true;
 #endif
