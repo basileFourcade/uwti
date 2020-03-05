@@ -201,6 +201,9 @@ void loop()
 		{
 			/* If yes stop sleep mode */
 			sleepModeRequired = false;
+			/* NOTE FOR MYSELF: isChangeDetected may be consumed here
+			 * Avoid using isChangeDetected for triggering an action
+			 * */
 		}
 	}
 	else
@@ -245,6 +248,7 @@ void loop()
 		{
 			// Charge is over
 			setLedringColor(randomColorId, VALUE_COLOR_MEDIUM);
+			// NOTE: This will be overwritten by any games
 		}
 	}
 
@@ -697,22 +701,36 @@ void pixel_art_duo_with_idle_sleep(button_event_t buttonEventMode)
 	else
 	{
 		/* Only the first Neighbors matters */
-		if (isChangeDetected)
+		/* If we come from 0 to 1 (or more) neighbors, then pick the color */
+		if ((nb_of_neighbors >= 1))
 		{
-			/* If we come from 0 to 1 neighbors, then pick the color */
-			if ((nb_of_neighbors == 1))
+			if (firstNeighbor == 0)
 			{
-				if (!firstNeighbor)
+				/* Nominal case */
+				if (nb_of_neighbors == 1)
 				{
 					firstNeighbor = 0x0F
 							& ((faces[0] << 3) + (faces[1] << 2)
 									+ (faces[2] << 1) + faces[3]);
 				}
+				else
+				{
+					/* In this case, just took the first bit available
+					 * NOTE: code above is redundant with the one below */
+					for (uint8_t i = 0; i < NB_FACES; i++)
+					{
+						if (faces[i])
+						{
+							firstNeighbor = 0x0F & ((faces[i] << (3 - i)));
+							break;
+						}
+					}
+				}
 			}
-			else if (nb_of_neighbors == 0)
-			{ /* If we come back to 0 , reset the color */
-				firstNeighbor = 0;
-			}
+		}
+		else if (nb_of_neighbors == 0)
+		{ /* If we come back to 0 , reset the color */
+			firstNeighbor = 0;
 		}
 
 		/* Now we can play */
