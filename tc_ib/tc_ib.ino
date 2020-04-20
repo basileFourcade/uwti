@@ -252,6 +252,11 @@ void loop()
 		}
 	}
 
+	/* If we are charging and noNeighborsUntilNow is still true, then clear it */
+	if(isCharging && noNeighborsUntilNow){
+		noNeighborsUntilNow = false;
+	}
+
 	/* Battery level check - provide millisSlept */
 	batteryLevelStatus(millisSlept);
 
