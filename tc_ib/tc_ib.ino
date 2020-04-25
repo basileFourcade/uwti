@@ -246,9 +246,8 @@ void loop()
 		// Action on change detected
 		if (!isCharging)
 		{
-			// Charge is over
-			setLedringColor(randomColorId, VALUE_COLOR_MEDIUM);
-			// NOTE: This will be overwritten by any games
+			/* Charge is over, we reset the LED, games will overwrite if any */
+			setLedringColor(NO_COLOR, 0);
 		}
 	}
 
