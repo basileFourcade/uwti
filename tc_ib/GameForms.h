@@ -259,7 +259,7 @@ color_t getColorFromCombinaisonEasy(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x07:
 		case 0x0B:
 		case 0x0D:
-			local_color = COLOR_WHITE;
+			local_color = NO_COLOR;
 			break;
 		}
 	}
@@ -299,7 +299,7 @@ color_t getColorFromCombinaisonEasy(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x07:
 		case 0x0B:
 		case 0x0D:
-			local_color = COLOR_WHITE;
+			local_color = NO_COLOR;
 			break;
 		}
 	}
@@ -339,7 +339,7 @@ color_t getColorFromCombinaisonEasy(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x07:
 		case 0x0B:
 		case 0x0D:
-			local_color = COLOR_WHITE;
+			local_color = NO_COLOR;
 			break;
 		}
 	}
@@ -379,7 +379,7 @@ color_t getColorFromCombinaisonEasy(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x07:
 		case 0x0B:
 		case 0x0D:
-			local_color = COLOR_WHITE;
+			local_color = NO_COLOR;
 			break;
 
 		}
@@ -412,7 +412,7 @@ color_t getColorFromCombinaisonEasy(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x06:
 		case 0x03:
 		case 0x09:
-			local_color = COLOR_WHITE;
+			local_color = NO_COLOR;
 			break;
 
 			// 3 faces
@@ -474,7 +474,7 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x07:
 		case 0x0B:
 		case 0x0D:
-			local_color = COLOR_WHITE;
+			local_color = NO_COLOR;
 			break;
 		}
 	}
@@ -515,7 +515,7 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x07:
 		case 0x0B:
 		case 0x0D:
-			local_color = COLOR_WHITE;
+			local_color = NO_COLOR;
 			break;
 		}
 	}
@@ -555,7 +555,7 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x07:
 		case 0x0B:
 		case 0x0D:
-			local_color = COLOR_WHITE;
+			local_color = NO_COLOR;
 			break;
 		}
 	}
@@ -595,7 +595,7 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x07:
 		case 0x0B:
 		case 0x0D:
-			local_color = COLOR_WHITE;
+			local_color = NO_COLOR;
 			break;
 		}
 	}
@@ -636,7 +636,7 @@ color_t getColorFromCombinaisonHard(uint8_t combinaison, uint8_t game_forms_id)
 		case 0x0E:
 		case 0x0B:
 		case 0x0D:
-			local_color = COLOR_WHITE;
+			local_color = NO_COLOR;
 			break;
 		}
 	}
